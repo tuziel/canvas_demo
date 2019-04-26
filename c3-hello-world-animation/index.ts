@@ -47,7 +47,7 @@ window.addEventListener('load', (): void => {
   /** 时间戳取样个数 */
   const sampling = 50;
   /** 记录之前渲染时的时间戳 */
-  const timestampList: number[] = new Array(sampling).fill(0);
+  const timestampList: number[] = new Array(sampling).fill(Infinity);
   /** 当前时间戳指针 */
   let pointer = 0;
   /**
@@ -56,7 +56,7 @@ window.addEventListener('load', (): void => {
    * 1000 / ((end - start) / (sampling - 1)) 的优化 =>
    * 1000 * (sampling - 1) / (end - start)
    */
-  const DETLA = 1000 * (sampling - 1);
+  const detla = 1000 * (sampling - 1);
 
   /** 文字透明度 */
   let alpha = 0;
@@ -109,12 +109,13 @@ window.addEventListener('load', (): void => {
    */
   function mainLoop(time: number) {
     // 计算帧数
-    timestampList[pointer % 50] = time;
-    const end = timestampList[pointer % 50];
-    const start = timestampList[(pointer + 1) % 50];
-    const fps = DETLA / (end - start);
+    const end = timestampList[pointer] = time;
+    if (++pointer >= sampling) {
+      pointer = 0;
+    }
+    const start = timestampList[pointer];
+    const fps = detla / (end - start);
     elmFps.innerText = `FPS: ${fps.toFixed(1)}`;
-    pointer++;
 
     requestAnimationFrame(mainLoop);
     drawScreen();
