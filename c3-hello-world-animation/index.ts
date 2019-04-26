@@ -6,6 +6,7 @@ window.addEventListener('load', (): void => {
    * 请求动画绘制
    *
    * 要求浏览器在下次重绘之前调用指定的回调函数更新动画
+   * XXX: 可以使用订阅发布模式避免开多个定时器
    * @param callback 更新动画帧所调用的函数
    */
   const requestAnimationFrame =
@@ -43,8 +44,9 @@ window.addEventListener('load', (): void => {
   const context = app.getContext('2d')!;
 
   const elmFps = document.getElementById('fps') as HTMLDivElement;
+  /** 时间戳取样个数 */
   const sampling = 50;
-  /** 近50次渲染的时间戳 */
+  /** 记录之前渲染时的时间戳 */
   const timestampList: number[] = new Array(sampling).fill(0);
   /** 当前时间戳指针 */
   let pointer = 0;
@@ -102,6 +104,8 @@ window.addEventListener('load', (): void => {
 
   /**
    * @param time 主循环
+   *
+   * XXX: 没有分离计算和渲染，不同设备表现不一致（如144HZ屏）
    */
   function mainLoop(time: number) {
     // 计算帧数
