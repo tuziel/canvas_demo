@@ -42,6 +42,20 @@ window.addEventListener('load', (): void => {
   const app = document.getElementById('app') as HTMLCanvasElement;
   const context = app.getContext('2d')!;
 
+  const elmFps = document.getElementById('fps') as HTMLDivElement;
+  const sampling = 50;
+  /** 近50次渲染的时间戳 */
+  const timestampList: number[] = new Array(sampling).fill(0);
+  /** 当前时间戳指针 */
+  let pointer = 0;
+  /**
+   * 特定值
+   *
+   * 1000 / ((end - start) / (sampling - 1)) 的优化 =>
+   * 1000 * (sampling - 1) / (end - start)
+   */
+  const DETLA = 1000 * (sampling - 1);
+
   /** 文字透明度 */
   let alpha = 0;
   /** 淡入还是淡出 */
@@ -86,13 +100,24 @@ window.addEventListener('load', (): void => {
     context.fillText(text, 150, 200);
   }
 
-  let count = 0;
-
+  /**
+   * @param time 主循环
+   */
   function mainLoop(time: number) {
-    count++;
-    console.log(time / count);
+    // 计算帧数
+    timestampList[pointer % 50] = time;
+    const end = timestampList[pointer % 50];
+    const start = timestampList[(pointer + 1) % 50];
+    const fps = DETLA / (end - start);
+    elmFps.innerText = `FPS: ${fps.toFixed(1)}`;
+    pointer++;
+
     requestAnimationFrame(mainLoop);
     drawScreen();
   }
+
+  /**
+   * 开始主循环
+   */
   requestAnimationFrame(mainLoop);
 });
