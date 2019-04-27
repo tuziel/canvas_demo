@@ -82,28 +82,28 @@ window.addEventListener('load', (): void => {
     context.textBaseline = 'top';
     // 日期
     context.fillStyle = '#000000';
-    context.font = '10px _';
+    context.font = '10px serif';
     context.fillText(`日期：${today.toLocaleDateString()}`, 150, 10);
     // 消息
     context.fillStyle = '#ff0000';
-    context.font = '14px _';
+    context.font = '14px serif';
     context.fillText(message, 125, 30);
     // 次数
     context.fillStyle = '#109910';
-    context.font = '16px _';
+    context.font = '16px serif';
     context.fillText(`猜测次数: ${guesses}`, 215, 50);
     // 结果
     context.fillStyle = '#000000';
-    context.font = '16px _';
+    context.font = '16px serif';
     context.fillText(`大或小: ${higherOrLower}`, 150, 125);
     // 猜过的字母
     context.fillStyle = '#ff0000';
-    context.font = '16px _';
+    context.font = '16px serif';
     context.fillText(`猜过的字母: ${lettersGuessed.join()}`, 10, 260);
 
     if (gameOver) {
       context.fillStyle = '#ff0000';
-      context.font = '40px _';
+      context.font = '40px serif';
       context.fillText('你猜中了！', 150, 180);
     }
   }

@@ -95,7 +95,7 @@ window.addEventListener('load', (): void => {
     }
 
     // 文本
-    context.font = '72px _';
+    context.font = '72px serif';
     context.textBaseline = 'top';
     context.globalAlpha = alpha;
     context.fillStyle = '#ffffff';
