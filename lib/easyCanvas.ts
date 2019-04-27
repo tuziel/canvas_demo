@@ -83,10 +83,10 @@ class C {
     x: number, y: number, width: number, height: number,
   ): C {
     const c2d = this.c2d;
-    const temp = c2d.fillStyle;
+    c2d.save();
     style && (c2d.fillStyle = style);
     c2d.fillRect(x, y, width, height);
-    c2d.fillStyle = temp;
+    c2d.restore();
     return this;
   }
 
@@ -111,7 +111,7 @@ class C {
     fillRule?: CanvasFillRule,
   ): C {
     const c2d = this.c2d;
-    const temp = c2d.fillStyle;
+    c2d.save();
     style && (c2d.fillStyle = style);
     if (fillRule) {
       c2d.fill(path as Path2D, fillRule);
@@ -120,7 +120,7 @@ class C {
     } else {
       c2d.fill(path as Path2D);
     }
-    c2d.fillStyle = temp;
+    c2d.restore();
     return this;
   }
 
@@ -171,6 +171,22 @@ class C {
    */
   public resetTransform(): C {
     this.resetTransform();
+    return this;
+  }
+
+  /**
+   * 还原上次状态
+   */
+  public restore(): C {
+    this.c2d.restore();
+    return this;
+  }
+
+  /**
+   * 保存当前状态
+   */
+  public save(): C {
+    this.c2d.save();
     return this;
   }
 
@@ -248,10 +264,10 @@ class C {
     x: number, y: number, width: number, height: number,
   ): C {
     const c2d = this.c2d;
-    const temp = c2d.strokeStyle;
+    c2d.save();
     style && (c2d.strokeStyle = style);
     c2d.strokeRect(x, y, width, height);
-    c2d.strokeStyle = temp;
+    c2d.restore();
     return this;
   }
 
@@ -266,14 +282,14 @@ class C {
     path?: Path2D,
   ) {
     const c2d = this.c2d;
-    const temp = c2d.strokeStyle;
+    c2d.save();
     style && (c2d.strokeStyle = style);
     if (path) {
       c2d.stroke(path);
     } else {
       c2d.stroke();
     }
-    c2d.strokeStyle = temp;
+    c2d.restore();
     return this;
   }
 
