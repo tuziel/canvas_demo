@@ -34,6 +34,16 @@ class C {
   }
 
   /**
+   * 设置透明度
+   *
+   * @param alpha 图形和图片透明度
+   */
+  public globalAlpha(alpha: number): C {
+    this.c2d.globalAlpha = alpha;
+    return this;
+  }
+
+  /**
    * 填充
    *
    * @param path 需要填充的 Path2D 路径
