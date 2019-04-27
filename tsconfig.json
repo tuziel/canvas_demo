@@ -4,6 +4,11 @@
     "experimentalDecorators": true,
     "inlineSourceMap": true,
     "inlineSources": true,
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "module": "CommonJS",
     "noFallthroughCasesInSwitch": true,
     "noImplicitAny": true,
@@ -14,7 +19,7 @@
     "pretty": true,
     "removeComments": true,
     "strict": true,
-    "target": "ES6",
+    "target": "ES5",
   },
   "include": [
     "./**/*.ts"

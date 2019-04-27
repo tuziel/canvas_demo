@@ -5,23 +5,24 @@
     ],
     "jsRules": {},
     "rules": {
-        "triple-equals": [
-            true,
-            "allow-null-check",
-            "allow-undefined-check"
-        ],
+        "no-bitwise": false,
         "no-console": {
             "severity": "warning"
         },
-        "quotemark": [
-            true,
-            "single"
-        ],
         "no-unused-expression": [
             true,
             "allow-fast-null-checks"
         ],
-        "object-literal-sort-keys": false
+        "object-literal-sort-keys": false,
+        "quotemark": [
+            true,
+            "single"
+        ],
+        "triple-equals": [
+            true,
+            "allow-null-check",
+            "allow-undefined-check"
+        ]
     },
     "rulesDirectory": []
 }
