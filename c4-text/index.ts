@@ -43,7 +43,6 @@ window.addEventListener('load', (): void => {
     const id = target.id as keyof typeof data;
 
     data[id] = target.value;
-    drawScreen();
   }
 
   /**
@@ -161,11 +160,17 @@ window.addEventListener('load', (): void => {
     $a.click();
   }
 
+  function mainLoop(): void {
+    requestAnimationFrame(mainLoop);
+    drawScreen();
+  }
+
   (function main(): void {
     pattern.addEventListener('load', drawScreen);
     $createImageData.addEventListener('click', createImageDataPressed);
     pattern.src = 'noise.png';
     initForm();
+    requestAnimationFrame(mainLoop);
   })();
 
 });
