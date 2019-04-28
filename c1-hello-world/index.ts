@@ -25,8 +25,6 @@ window.addEventListener('load', (): void => {
 
   // 图片
   const hwImg = new Image();
-  hwImg.addEventListener('load', () => {
-    context.drawImage(hwImg, 160, 130);
-  });
+  hwImg.addEventListener('load', (): void => context.drawImage(hwImg, 160, 130));
   hwImg.src = 'hello-world.jpg';
 });

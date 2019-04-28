@@ -70,7 +70,7 @@ window.addEventListener('load', (): void => {
   /**
    * 绘制界面
    */
-  function drawScreen() {
+  function drawScreen(): void {
     // 背景
     context.globalAlpha = 1;
     context.fillStyle = '#000000';
@@ -107,7 +107,7 @@ window.addEventListener('load', (): void => {
    *
    * XXX: 没有分离计算和渲染，不同设备表现不一致（如144HZ屏）
    */
-  function mainLoop(time: number) {
+  function mainLoop(time: number): void {
     // 计算帧数
     const end = timestampList[pointer] = time;
     if (++pointer >= sampling) {

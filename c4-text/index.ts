@@ -64,7 +64,7 @@ window.addEventListener('load', (): void => {
   /**
    * 绘制界面
    */
-  function drawScreen() {
+  function drawScreen(): void {
     // 缓存
     const text = data.iText;
     const color = data.iColor;
@@ -161,7 +161,7 @@ window.addEventListener('load', (): void => {
     $a.click();
   }
 
-  (function main() {
+  (function main(): void {
     pattern.addEventListener('load', drawScreen);
     $createImageData.addEventListener('click', createImageDataPressed);
     pattern.src = 'noise.png';
