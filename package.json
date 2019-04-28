@@ -1,0 +1,28 @@
+{
+  "name": "canvas_demo",
+  "version": "1.0.0",
+  "description": "是的我又开新坑了",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tuziel/canvas_demo.git"
+  },
+  "keywords": [
+    "canvas"
+  ],
+  "author": "tuziel <tuziel@outlook.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tuziel/canvas_demo/issues"
+  },
+  "homepage": "https://github.com/tuziel/canvas_demo#readme",
+  "dependencies": {
+    "@types/lodash": "^4.14.123"
+  }
+}
