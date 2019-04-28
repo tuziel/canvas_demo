@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>文字</title>
+
+  <style>
+    .form {
+      max-width: 600px;
+    }
+    .form div {
+      display: inline-block;
+      min-width: 280px;
+      line-height: 2em;
+      vertical-align: top;
+    }
+    .form label {
+      display: inline-block;
+      width: 100px;
+    }
+    .form label::after {
+      content: "：";
+    }
+    .form input[type="text"],
+    .form input[type="range"],
+    .form input[type="color"],
+    .form select {
+      width: 160px;
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="app" width="500" height="300" style="border:1px solid #000;">您的浏览器不支持Canvas</canvas>
+  <form class="form">
+    <div>
+      <label>文本</label>
+      <input type="text" id="iText" value="Hello World!">
+    </div>
+    <div>
+      <label>字体</label>
+      <input type="text" id="iFont" value="宋体">
+    </div>
+    <div>
+      <label>字重</label>
+      <select id="iFontWeight">
+        <option value="normal">通常</option>
+        <option value="bold">粗体（bold）</option>
+        <option value="bolder">粗体（bolder）</option>
+        <option value="lighter">细体（lighter）</option>
+      </select>
+    </div>
+    <div>
+      <label>字体风格</label>
+      <select id="iFontStyle">
+        <option value="normal">通常</option>
+        <option value="italic">手写体</option>
+        <option value="oblique">斜体</option>
+      </select>
+    </div>
+    <div>
+      <label>字体大小</label>
+      <input type="range" id="iFontSize" min="0" max="200" step="1" value="50">
+    </div>
+    <div>
+      <label>填充类型</label>
+      <select id="iFillType">
+        <option value="color">纯色填充</option>
+        <option value="linearGradient">线性渐变</option>
+        <option value="radialGradient">径向渐变</option>
+        <option value="pattern">图像</option>
+      </select>
+    </div>
+    <div>
+      <label>填充主色</label>
+      <input type="color" id="iColor" value="#ff0000">
+    </div>
+    <div>
+      <label>填充渐变色</label>
+      <input type="color" id="iColor2" value="#000000">
+    </div>
+    <div>
+      <label>描边类型</label>
+      <select id="iStrokeType">
+        <option value="">无</option>
+        <option value="color">纯色填充</option>
+        <option value="linearGradient">线性渐变</option>
+        <option value="radialGradient">径向渐变</option>
+        <option value="pattern">图像</option>
+      </select>
+    </div>
+    <div>
+      <label>描边主色</label>
+      <input type="color" id="iStrokeColor" value="#ff0000">
+    </div>
+    <div>
+      <label>描边渐变色</label>
+      <input type="color" id="iStrokeColor2" value="#000000">
+    </div>
+    <div>
+      <label>垂直对齐</label>
+      <select id="iTextBaseline">
+        <option value="top">顶部对齐</option>
+        <option value="bottom">底部对齐</option>
+        <option value="middle">垂直居中</option>
+        <option value="alphabetic">基线对齐</option>
+        <option value="hanging">悬挂基线对齐</option>
+        <option value="ideographic">表意字基线对齐</option>
+      </select>
+    </div>
+    <div>
+      <label>文本对齐</label>
+      <select id="iTextAling">
+        <option value="left">左对齐</option>
+        <option value="right">右对齐</option>
+        <option value="center">居中对齐</option>
+        <option value="start">开始位置对齐</option>
+        <option value="end">结束位置对齐</option>
+      </select>
+    </div>
+    <div>
+      <label>不透明度</label>
+      <input type="range" id="iAlpha" min="0" max="1" step="0.01" value="1">
+    </div>
+    <div>
+      <label>阴影偏移X</label>
+      <input type="range" id="iShadowX" min="-100" max="100" step="1" value="1">
+    </div>
+    <div>
+      <label>阴影偏移Y</label>
+      <input type="range" id="iShadowY" min="-100" max="100" step="1" value="1">
+    </div>
+    <div>
+      <label>模糊</label>
+      <input type="range" id="iShadowBlur" min="0" max="100" step="1" value="1">
+    </div>
+    <div>
+      <label>阴影颜色</label>
+      <input type="color" id="iShadowColor" value="#707070">
+    </div>
+    <div>
+      <input type="button" id="createImageData" value="导出画布">
+    </div>
+    <div>
+      <textarea id="imageData" cols="30" rows="10"></textarea>
+    </div>
+  </form>
+
+  <script src="./index.js"></script>
+</body>
+
+</html>
