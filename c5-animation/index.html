@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Hello World!</title>
+</head>
+
+<body>
+  <canvas id="app" width="500" height="300" style="border:1px solid #000;">您的浏览器不支持Canvas</canvas>
+  <form>
+    <input type="button" id="iPause" value="暂停">
+    <input type="button" id="iStart" value="开始">
+    <input type="button" id="iReset" value="重置">
+    <div>
+      周期：<input type="range" id="iPeriod" value="1000" min="10" max="2000" step="10">
+    </div>
+  </form>
+
+  <script src="../lib/polyfillRAF.js"></script>
+  <script src="./waveformAni.js"></script>
+  <script src="./index.js"></script>
+</body>
+
+</html>
