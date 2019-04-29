@@ -31,7 +31,7 @@ class Ani {
     period: number,
     renderer: (phase: number) => void,
   ) {
-    this.startStamp = startStamp;
+    this.startStamp = this.pauseStamp = startStamp;
     this.period = period;
     this.renderer = renderer;
   }
@@ -54,8 +54,7 @@ class Ani {
    * @param time 当前时间
    */
   public reset(time: number) {
-    this.startStamp = time;
-    this.state = true;
+    this.startStamp = this.pauseStamp = time;
   }
 
   /**
