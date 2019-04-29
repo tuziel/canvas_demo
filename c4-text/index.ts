@@ -32,7 +32,10 @@ window.addEventListener('load', (): void => {
     iShadowColor: '',
   };
 
+  /** 文字背景图 */
   const pattern = new Image();
+  /** 动画周期 */
+  const period = 3000;
 
   /**
    * 表单项发生变化
@@ -63,7 +66,7 @@ window.addEventListener('load', (): void => {
   /**
    * 绘制界面
    */
-  function drawScreen(): void {
+  function drawScreen(time: number): void {
     // 缓存
     const text = data.iText;
     const color = data.iColor;
@@ -71,6 +74,8 @@ window.addEventListener('load', (): void => {
     const StrokeColor = data.iStrokeColor;
     const StrokeColor2 = data.iStrokeColor2;
     const fontSize = +data.iFontSize;
+    /** 周期中的位置 */
+    const phase = time % period / period;
 
     // 背景
     context.globalAlpha = 1;
@@ -98,21 +103,25 @@ window.addEventListener('load', (): void => {
     /** 文本信息 */
     const metrics = context.measureText(text);
     const textWidth = metrics.width;
+    const textWidthHalf = textWidth / 2;
     const x = app.width / 2;
     const y = app.height / 2;
+    const theta = Math.PI * 2 * phase;
+    const x2 = x + textWidthHalf * Math.cos(theta);
+    const y2 = y + textWidthHalf * Math.sin(theta);
 
     // 填充
     let style;
     switch (data.iFillType) {
       case 'linearGradient': {
-        style = context.createLinearGradient(x, y, textWidth, y);
+        style = context.createLinearGradient(x, y, x2, y2);
         style.addColorStop(0, color);
-        style.addColorStop(.6, color2);
+        style.addColorStop(1, color2);
         break;
       } case 'radialGradient': {
-        style = context.createRadialGradient(x, y, fontSize, x + textWidth, y, 1);
+        style = context.createRadialGradient(x, y, 0, x2, y2, textWidth);
         style.addColorStop(0, color);
-        style.addColorStop(.6, color2);
+        style.addColorStop(1, color2);
         break;
       } case 'pattern': {
         style = context.createPattern(pattern, 'repeat')!;
@@ -128,14 +137,14 @@ window.addEventListener('load', (): void => {
       // 描边
       switch (data.iStrokeType) {
         case 'linearGradient': {
-          style = context.createLinearGradient(x, y, textWidth, y);
+          style = context.createLinearGradient(x, y, x2, y2);
           style.addColorStop(0, StrokeColor);
-          style.addColorStop(.6, StrokeColor2);
+          style.addColorStop(1, StrokeColor2);
           break;
         } case 'radialGradient': {
-          style = context.createRadialGradient(x, y, fontSize, x + textWidth, y, 1);
+          style = context.createRadialGradient(x, y, 0, x2, y2, textWidth);
           style.addColorStop(0, StrokeColor);
-          style.addColorStop(.6, StrokeColor2);
+          style.addColorStop(1, StrokeColor2);
           break;
         } case 'pattern': {
           style = context.createPattern(pattern, 'repeat')!;
@@ -160,17 +169,16 @@ window.addEventListener('load', (): void => {
     $a.click();
   }
 
-  function mainLoop(): void {
+  function mainLoop(time: number): void {
     requestAnimationFrame(mainLoop);
-    drawScreen();
+    drawScreen(time);
   }
 
   (function main(): void {
-    pattern.addEventListener('load', drawScreen);
     $createImageData.addEventListener('click', createImageDataPressed);
+    pattern.addEventListener('load', () => requestAnimationFrame(mainLoop));
     pattern.src = 'noise.png';
     initForm();
-    requestAnimationFrame(mainLoop);
   })();
 
 });
