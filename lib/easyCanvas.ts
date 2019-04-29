@@ -13,6 +13,13 @@ class C {
   }
 
   /**
+   * 获取画布元素
+   */
+  public canvas(): HTMLCanvasElement {
+    return this.$el;
+  }
+
+  /**
    * 清空画布
    */
   public clear(): C {
@@ -40,6 +47,26 @@ class C {
    */
   public globalAlpha(alpha: number): C {
     this.c2d.globalAlpha = alpha;
+    return this;
+  }
+
+  /**
+   * 设置绘制新形状时应用的合成操作的类型
+   *
+   * @param type 合成类型
+   */
+  public globalCompositeOperation(type: string): C {
+    this.c2d.globalCompositeOperation = type;
+    return this;
+  }
+
+  /**
+   * 设置图片是否平滑
+   *
+   * @param value 图片是否平滑
+   */
+  public imageSmoothingEnabled(value: boolean): C {
+    this.c2d.imageSmoothingEnabled = value;
     return this;
   }
 
@@ -145,6 +172,16 @@ class C {
   }
 
   /**
+   * 设置当前字体样式
+   *
+   * @param font 字体样式
+   */
+  public font(font: string): C {
+    this.c2d.font = font;
+    return this;
+  }
+
+  /**
    * 注销监听器
    *
    * @param type 事件类型
@@ -229,6 +266,46 @@ class C {
     dx: number, dy: number,
   ): C {
     this.c2d.setTransform(m11, m12, m21, m22, dx, dy);
+    return this;
+  }
+
+  /**
+   * 设置阴影模糊效果程度
+   *
+   * @param level 模糊效果程度
+   */
+  public shadowBlur(level: number): C {
+    this.c2d.shadowBlur = level;
+    return this;
+  }
+
+  /**
+   * 设置阴影颜色
+   *
+   * @param color 阴影颜色
+   */
+  public shadowColor(color: string): C {
+    this.c2d.shadowColor = color;
+    return this;
+  }
+
+  /**
+   * 设置阴影水平偏移距离
+   *
+   * @param offset 水平偏移距离
+   */
+  public shadowOffsetX(offset: number): C {
+    this.c2d.shadowOffsetX = offset;
+    return this;
+  }
+
+  /**
+   * 设置阴影垂直偏移距离
+   *
+   * @param offset 垂直偏移距离
+   */
+  public shadowOffsetY(offset: number): C {
+    this.c2d.shadowOffsetY = offset;
     return this;
   }
 
