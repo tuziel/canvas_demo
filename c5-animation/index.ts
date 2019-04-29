@@ -18,8 +18,8 @@ window.addEventListener('load', (): void => {
   const $period = document.getElementById('iPeriod') as HTMLInputElement;
   /** 操作队列 */
   const commanQueue: Array<{
-    comman: (a: any, b: any) => void,
-    args: [any, any];
+    name: 'start' | 'pause' | 'reset' | 'setPeriod',
+    payload?: any,
   }> = [];
 
   // 缓存
@@ -54,29 +54,14 @@ window.addEventListener('load', (): void => {
    */
   function initForm(): void {
     // 只把操作加入队列，下次渲染时再操作
-    $pause.addEventListener('click', () => {
-      commanQueue.push({
-        comman: aniCircle.pause.bind(aniCircle),
-        args: ['$time', null],
-      });
-    });
-    $start.addEventListener('click', () => {
-      commanQueue.push({
-        comman: aniCircle.start.bind(aniCircle),
-        args: ['$time', null],
-      });
-    });
-    $reset.addEventListener('click', () => {
-      commanQueue.push({
-        comman: aniCircle.reset.bind(aniCircle),
-        args: ['$time', null],
-      });
-    });
+    $pause.addEventListener('click', () => commanQueue.push({ name: 'pause' }));
+    $start.addEventListener('click', () => commanQueue.push({ name: 'start' }));
+    $reset.addEventListener('click', () => commanQueue.push({ name: 'reset' }));
     $period.addEventListener('change', () => {
       const period = +$period.value || 0;
       commanQueue.push({
-        comman: aniCircle.setPeriod.bind(aniCircle),
-        args: [period, '$time'],
+        name: 'setPeriod',
+        payload: period,
       });
     });
   }
@@ -85,11 +70,18 @@ window.addEventListener('load', (): void => {
   function execCommanQueue(time: number): void {
     let comman;
     while ((comman = commanQueue.pop())) {
-      // XXX: 好吧我承认这段写得很垃圾，以后学完命令模式再看看怎么优化吧
-      const args = comman.args;
-      const a = args[0] === '$time' ? time : args[0];
-      const b = args[1] === '$time' ? time : args[1];
-      comman.comman(a, b);
+      switch (comman.name) {
+        case 'pause':
+        case 'reset':
+        case 'start': {
+          aniCircle[comman.name](time);
+          break;
+        }
+        case 'setPeriod': {
+          aniCircle.setPeriod(comman.payload, time);
+          break;
+        }
+      }
     }
   }
 
