@@ -6,7 +6,7 @@ class Ani {
    * @param startStamp 起始时间
    * @param time 当前时间
    */
-  public static getPhase(period: number, startStamp: number, time: number) {
+  public static getPhase(period: number, startStamp: number, time: number): number {
     return (time - startStamp) % period / period;
   }
 
@@ -41,7 +41,7 @@ class Ani {
    *
    * @param time 当前时间
    */
-  public render(time: number) {
+  public render(time: number): void {
     if (!this.state) {
       time = this.pauseStamp;
     }
@@ -53,7 +53,7 @@ class Ani {
    *
    * @param time 当前时间
    */
-  public reset(time: number) {
+  public reset(time: number): void {
     this.startStamp = this.pauseStamp = time;
   }
 
@@ -62,7 +62,7 @@ class Ani {
    *
    * @param time 当前时间
    */
-  public start(time: number) {
+  public start(time: number): void {
     if (!this.state) {
       this.startStamp += time - this.pauseStamp;
       this.state = true;
@@ -74,7 +74,7 @@ class Ani {
    *
    * @param time 当前时间
    */
-  public pause(time: number) {
+  public pause(time: number): void {
     if (this.state) {
       this.pauseStamp = time;
       this.state = false;
@@ -87,7 +87,7 @@ class Ani {
    * @param period 周期
    * @param time 当前时间
    */
-  public setPeriod(period: number, time: number) {
+  public setPeriod(period: number, time: number): void {
     if (!this.state) {
       this.startStamp += time - this.pauseStamp;
       this.pauseStamp = time;
