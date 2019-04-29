@@ -6,6 +6,7 @@
     "jsRules": {},
     "rules": {
         "no-bitwise": false,
+        "no-conditional-assignment": false,
         "no-console": {
             "severity": "warning"
         },
