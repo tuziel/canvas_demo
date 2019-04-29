@@ -42,7 +42,7 @@ window.addEventListener('load', (): void => {
    * @param e 事件
    */
   function formItemChange(e: Event) {
-    const target = (e.target as any) as { id: string, value: string };
+    const target = (e.target as any);
     const id = target.id as keyof typeof data;
 
     data[id] = target.value;
