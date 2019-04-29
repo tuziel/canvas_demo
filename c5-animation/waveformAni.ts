@@ -16,7 +16,7 @@ class Ani {
   protected pauseStamp = 0;
   /** 动画周期 */
   protected period: number;
-  /** 运行状态 */
+  /** 运动状态 */
   protected state = true;
 
   /**
@@ -42,9 +42,10 @@ class Ani {
    * @param time 当前时间
    */
   public render(time: number) {
-    if (this.state) {
-      this.renderer(Ani.getPhase(this.period, this.startStamp, time));
+    if (!this.state) {
+      time = this.pauseStamp;
     }
+    this.renderer(Ani.getPhase(this.period, this.startStamp, time));
   }
 
   /**
@@ -54,6 +55,7 @@ class Ani {
    */
   public reset(time: number) {
     this.startStamp = time;
+    this.state = true;
   }
 
   /**
@@ -87,8 +89,9 @@ class Ani {
    * @param time 当前时间
    */
   public setPeriod(period: number, time: number) {
-    if (this.state) {
+    if (!this.state) {
       this.startStamp += time - this.pauseStamp;
+      this.pauseStamp = time;
     }
     const phase = Ani.getPhase(this.period, this.startStamp, time);
     this.startStamp = time - (period * phase);
