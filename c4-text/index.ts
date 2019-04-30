@@ -93,7 +93,7 @@ window.addEventListener('load', (): void => {
     // 文本
     context.textBaseline = data.iTextBaseline as CanvasTextBaseline;
     context.textAlign = data.iTextAling as CanvasTextAlign;
-    context.font = `${data.iFontWeight} ${data.iFontStyle} ${fontSize}px ${data.iFont}`;
+    context.font = `${data.iFontStyle} ${data.iFontWeight} ${fontSize}px ${data.iFont}`;
     context.shadowColor = data.iShadowColor;
     context.shadowOffsetX = +data.iShadowX;
     context.shadowOffsetY = +data.iShadowY;
