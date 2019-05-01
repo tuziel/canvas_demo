@@ -41,36 +41,6 @@ class C {
   }
 
   /**
-   * 设置透明度
-   *
-   * @param alpha 图形和图片透明度
-   */
-  public globalAlpha(alpha: number): C {
-    this.c2d.globalAlpha = alpha;
-    return this;
-  }
-
-  /**
-   * 设置绘制新形状时应用的合成操作的类型
-   *
-   * @param type 合成类型
-   */
-  public globalCompositeOperation(type: string): C {
-    this.c2d.globalCompositeOperation = type;
-    return this;
-  }
-
-  /**
-   * 设置图片是否平滑
-   *
-   * @param value 图片是否平滑
-   */
-  public imageSmoothingEnabled(value: boolean): C {
-    this.c2d.imageSmoothingEnabled = value;
-    return this;
-  }
-
-  /**
    * 填充
    *
    * @param path 需要填充的 Path2D 路径
@@ -178,6 +148,86 @@ class C {
    */
   public font(font: string): C {
     this.c2d.font = font;
+    return this;
+  }
+
+  /**
+   * 设置透明度
+   *
+   * @param alpha 图形和图片透明度
+   */
+  public globalAlpha(alpha: number): C {
+    this.c2d.globalAlpha = alpha;
+    return this;
+  }
+
+  /**
+   * 设置绘制新形状时应用的合成操作的类型
+   *
+   * @param type 合成类型
+   */
+  public globalCompositeOperation(type: string): C {
+    this.c2d.globalCompositeOperation = type;
+    return this;
+  }
+
+  /**
+   * 设置图片是否平滑
+   *
+   * @param value 图片是否平滑
+   */
+  public imageSmoothingEnabled(value: boolean): C {
+    this.c2d.imageSmoothingEnabled = value;
+    return this;
+  }
+
+  /**
+   * 设置线条时的末端属性
+   *
+   * @param lineCap 末端属性
+   */
+  public lineCap(lineCap: CanvasLineCap): C {
+    this.c2d.lineCap = lineCap;
+    return this;
+  }
+
+  /**
+   * 设置虚线的偏移量
+   *
+   * @param offset 偏移量
+   */
+  public lineDashOffset(offset: number): C {
+    this.c2d.lineDashOffset = offset;
+    return this;
+  }
+
+  /**
+   * 设置线条的连接属性
+   *
+   * @param lineJoin 连接属性
+   */
+  public lineJoin(lineJoin: CanvasLineJoin): C {
+    this.c2d.lineJoin = lineJoin;
+    return this;
+  }
+
+  /**
+   * 设置线条厚度
+   *
+   * @param width 线条厚度
+   */
+  public lineWidth(width: number): C {
+    this.c2d.lineWidth = width;
+    return this;
+  }
+
+  /**
+   * 设定外延交点与连接点的最大距离
+   *
+   * @param limit 最大距离
+   */
+  public miterLimit(limit: number): C {
+    this.c2d.miterLimit = limit;
     return this;
   }
 
@@ -387,6 +437,26 @@ class C {
    */
   public strokeStyle(style: string | CanvasGradient | CanvasPattern): C {
     this.c2d.strokeStyle = style;
+    return this;
+  }
+
+  /**
+   * 设置文本对齐方式
+   *
+   * @param align 对齐方式
+   */
+  public textAlign(align: CanvasTextAlign): C {
+    this.c2d.textAlign = align;
+    return this;
+  }
+
+  /**
+   * 设置文本基线
+   *
+   * @param value 基线属性
+   */
+  public textBaseline(value: CanvasTextBaseline): C {
+    this.c2d.textBaseline = value;
     return this;
   }
 }
