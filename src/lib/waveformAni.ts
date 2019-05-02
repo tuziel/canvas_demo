@@ -1,4 +1,4 @@
-class Ani {
+export default class Ani {
   /**
    * 获取当前时间在周期中的位置
    *

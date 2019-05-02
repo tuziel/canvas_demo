@@ -1,7 +1,3 @@
-import './style.css';
-
-import src = require('./hello-world.jpg');
-
 window.addEventListener('load', (): void => {
   // 判断兼容性
   const canUseCanvas = !!document.createElement('canvas').getContext;
@@ -30,5 +26,5 @@ window.addEventListener('load', (): void => {
   // 图片
   const hwImg = new Image();
   hwImg.addEventListener('load', (): void => context.drawImage(hwImg, 160, 130));
-  hwImg.src = src;
+  hwImg.src = require('./hello-world.jpg');
 });

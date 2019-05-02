@@ -1,15 +1,19 @@
+const fs = require('fs');
 const path = require('path');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-module.exports = {
+const ROOT = __dirname;
+
+const config = {
   mode: 'production',
-  entry: {
-    demo: `${__dirname}/src/demo/index.ts`,
-  },
+  entry: {},
   output: {
-    filename: '[name].[chunkhash:8].js',
-    path: path.resolve(__dirname, 'dist'),
+    filename: 'js/[chunkhash].js',
+    path: path.resolve(ROOT, 'dist'),
+  },
+  resolve: {
+    extensions: ['.ts', '.js'],
   },
   module: {
     rules: [
@@ -17,7 +21,7 @@ module.exports = {
         test: /\.ts$/,
         use: [
           'ts-loader',
-        ]
+        ],
       },
       {
         test: /\.css$/,
@@ -27,17 +31,23 @@ module.exports = {
         ],
       },
       {
-        test: /\.(png|svg|jpg|gif|woff|woff2|eot|ttf|otf)$/,
+        test: /\.(png|svg|jpg|gif)$/,
         use: [
-          'file-loader',
-        ]
+          {
+            loader: 'file-loader',
+            options: {
+              outputPath: 'images',
+            },
+          },
+        ],
       },
     ],
   },
   plugins: [
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
-      template: `${__dirname}/src/demo/index.html`,
+      template: `${ROOT}/src/index.html`,
+      chunks: [],
       minify: {
         collapseWhitespace: true,
         removeComments: true,
@@ -46,3 +56,32 @@ module.exports = {
     }),
   ],
 };
+
+function getEntryfrom(dir) {
+  const files = fs.readdirSync(dir, { withFileTypes: true });
+  files.forEach((file) => {
+    // 遍历文件目录
+    if (file.isDirectory()) {
+      const dirName = file.name;
+      const content = fs.readdirSync(path.resolve(dir, dirName));
+      // 如果存在index.ts则作为页面入口
+      if (content.indexOf('index.ts') >= 0) {
+        config.entry[dirName] = path.resolve(ROOT, 'src', dirName, 'index.ts');
+        config.plugins.push(new HtmlWebpackPlugin({
+          template: path.resolve(ROOT, 'src', dirName, 'index.html'),
+          chunks: [dirName],
+          minify: {
+            collapseWhitespace: true,
+            removeComments: true,
+            useShortDoctype: true,
+          },
+          filename: `${dirName}.html`,
+        }));
+      }
+    }
+  })
+}
+
+getEntryfrom(path.resolve(ROOT, 'src'));
+
+module.exports = config;

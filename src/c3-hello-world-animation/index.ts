@@ -1,3 +1,5 @@
+import '../lib/polyfillArray';
+
 window.addEventListener('load', (): void => {
   /** 打开页面的时间戳 */
   const __TIMESTAMP__ = +new Date();
@@ -65,7 +67,7 @@ window.addEventListener('load', (): void => {
   const text = 'Hello world!';
   /** hello world 背景图 */
   const hwImage = new Image();
-  hwImage.src = 'bg-html5.jpg';
+  hwImage.src = require('./bg-html5.jpg');
 
   /**
    * 绘制界面

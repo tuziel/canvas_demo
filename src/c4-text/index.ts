@@ -1,3 +1,6 @@
+import '../lib/polyfillRAF';
+import './index.css';
+
 window.addEventListener('load', (): void => {
   const canUseCanvas = !!document.createElement('canvas').getContext;
   if (!canUseCanvas) {
@@ -177,7 +180,7 @@ window.addEventListener('load', (): void => {
   (function main(): void {
     $createImageData.addEventListener('click', createImageDataPressed);
     pattern.addEventListener('load', () => requestAnimationFrame(mainLoop));
-    pattern.src = 'noise.png';
+    pattern.src = require('./noise.png');
     initForm();
   })();
 

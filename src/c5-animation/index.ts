@@ -1,3 +1,6 @@
+import '../lib/polyfillRAF';
+import Ani from '../lib/waveformAni';
+
 window.addEventListener('load', (): void => {
   // 判断兼容性
   const canUseCanvas = !!document.createElement('canvas').getContext;
