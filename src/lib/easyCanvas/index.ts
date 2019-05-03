@@ -1,7 +1,7 @@
 /**
  * canvas库
  */
-class C {
+export default class C {
   /** canvas 元素 */
   protected $el: HTMLCanvasElement;
   /** canvas 2d 环境 */
