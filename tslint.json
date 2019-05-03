@@ -15,6 +15,7 @@
             "allow-fast-null-checks"
         ],
         "object-literal-sort-keys": false,
+        "ordered-imports": false,
         "quotemark": [
             true,
             "single"
