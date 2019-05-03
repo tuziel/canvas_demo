@@ -1,5 +1,5 @@
-import '../lib/polyfillRAF';
-import Ani from '../lib/waveformAni';
+import '../lib/polyfill/polyfillRAF';
+import Ani from '../lib/waveformAni/index';
 
 window.addEventListener('load', (): void => {
   // 判断兼容性

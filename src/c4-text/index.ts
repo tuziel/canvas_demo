@@ -1,4 +1,4 @@
-import '../lib/polyfillRAF';
+import '../lib/polyfill/polyfillRAF';
 import './index.css';
 
 window.addEventListener('load', (): void => {
