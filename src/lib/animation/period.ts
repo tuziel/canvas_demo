@@ -1,11 +1,11 @@
 import Ani from './ani';
 
 interface IPhase {
-  /** 当前坐标位置 */
+  /** 坐标位置 */
   coord: number;
-  /** 当前周期位置 */
+  /** 周期中位置 */
   phase: number;
-  /** 当前周期次数 */
+  /** 周期次数 */
   times: number;
 }
 
@@ -34,7 +34,8 @@ export default class PeriodAni extends Ani {
   /**
    * 渲染回调
    *
-   * @param phase 在周期中的位置
+   * @param phase 周期中的位置
+   * @param times 第几个周期
    */
   protected periodRenderer: (phase: number, times?: number) => void;
 
@@ -42,7 +43,7 @@ export default class PeriodAni extends Ani {
    * 创建周期动画
    *
    * @param startStamp 动画开始时间
-   * @param period 周期长度
+   * @param period 周期
    * @param renderer 渲染回调
    */
   constructor(
