@@ -1,4 +1,4 @@
-import '../lib/polyfill/polyfillArray';
+import '../lib/polyfill/array';
 
 window.addEventListener('load', (): void => {
   /** 打开页面的时间戳 */

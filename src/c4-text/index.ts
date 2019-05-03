@@ -1,5 +1,5 @@
-import '../lib/polyfill/polyfillRAF';
 import './index.css';
+import '../lib/polyfill/requestAnimationFrame';
 
 window.addEventListener('load', (): void => {
   const canUseCanvas = !!document.createElement('canvas').getContext;

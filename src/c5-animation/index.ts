@@ -1,5 +1,5 @@
+import '../lib/polyfill/requestAnimationFrame';
 import PeriodAni from '../lib/animation/period';
-import '../lib/polyfill/polyfillRAF';
 
 window.addEventListener('load', (): void => {
   // 判断兼容性
