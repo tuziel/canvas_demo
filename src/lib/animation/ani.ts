@@ -1,38 +1,29 @@
 export default class Ani {
-  /**
-   * 获取当前时间在周期中的位置
-   *
-   * @param period 周期
-   * @param startStamp 起始时间
-   * @param time 当前时间
-   */
-  public static getPhase(period: number, startStamp: number, time: number): number {
-    return (time - startStamp) % period / period;
-  }
-
-  /** 动画注册时间 */
+  /** 动画开始时间 */
   protected startStamp: number;
   /** 动画暂停时间 */
   protected pauseStamp = 0;
-  /** 动画周期 */
-  protected period: number;
   /** 运动状态 */
   protected state = true;
 
   /**
    * 渲染回调
    *
-   * @param phase 在周期中的位置
+   * @param time 当前时间
    */
-  protected renderer: (phase: number) => void;
+  protected renderer: (time: number) => void;
 
+  /**
+   * 创建动画
+   *
+   * @param startStamp 动画开始时间
+   * @param renderer 渲染回调
+   */
   constructor(
     startStamp: number,
-    period: number,
-    renderer: (phase: number) => void,
+    renderer: (time: number) => void,
   ) {
     this.startStamp = this.pauseStamp = startStamp;
-    this.period = period;
     this.renderer = renderer;
   }
 
@@ -45,7 +36,7 @@ export default class Ani {
     if (!this.state) {
       time = this.pauseStamp;
     }
-    this.renderer(Ani.getPhase(this.period, this.startStamp, time));
+    this.renderer(time);
   }
 
   /**
@@ -79,21 +70,5 @@ export default class Ani {
       this.pauseStamp = time;
       this.state = false;
     }
-  }
-
-  /**
-   * 重新设置周期
-   *
-   * @param period 周期
-   * @param time 当前时间
-   */
-  public setPeriod(period: number, time: number): void {
-    if (!this.state) {
-      this.startStamp += time - this.pauseStamp;
-      this.pauseStamp = time;
-    }
-    const phase = Ani.getPhase(this.period, this.startStamp, time);
-    this.startStamp = time - (period * phase);
-    this.period = period;
   }
 }
