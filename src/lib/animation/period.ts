@@ -50,8 +50,7 @@ export default class PeriodAni extends Ani {
     period: number,
     periodRenderer: (phase: number, times?: number) => void,
   ) {
-    super(startStamp, () => void 0);
-    this.renderer = this.render;
+    super(startStamp, PeriodAni.prototype.render);
     this.periodRenderer = periodRenderer;
     this.period = period;
   }
