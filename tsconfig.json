@@ -9,7 +9,7 @@
       "dom.iterable",
       "esnext"
     ],
-    "module": "CommonJS",
+    "module": "umd",
     "noFallthroughCasesInSwitch": true,
     "noImplicitAny": true,
     "noImplicitReturns": true,
