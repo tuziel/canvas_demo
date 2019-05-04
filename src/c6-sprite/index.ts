@@ -14,12 +14,12 @@ window.addEventListener('load', (): void => {
   const appHeight = app.height;
 
   /** 步长 */
-  const step = 100;
+  const step = 10;
   /** 游戏时钟 */
   let gameTime = 0;
   /** 现实时钟 */
-  let relaTime = 0;
-  console.log(`游戏步长为: ${step}`);
+  // let relaTime = 0;
+  // console.log(`游戏步长为: ${step}`);
 
   /** 游戏数据 */
   let count = 0;
@@ -48,7 +48,7 @@ window.addEventListener('load', (): void => {
     context.font = '40px sans-serif';
     context.fillStyle = '#000000';
     context.fillText(text, 20, 100);
-    console.log(`！更新视图到: ${text}, 游戏时钟为: ${gameTime}, 现实时钟为: ${relaTime}`);
+    // console.log(`！更新视图到: ${text}, 游戏时钟为: ${gameTime}, 现实时钟为: ${relaTime}`);
   }
 
   /**
@@ -56,7 +56,7 @@ window.addEventListener('load', (): void => {
    */
   function update(): void {
     count += step;
-    console.log(`更新数据到: ${count}, 游戏时钟为: ${gameTime}, 现实时钟为: ${relaTime}`);
+    // console.log(`更新数据到: ${count}, 游戏时钟为: ${gameTime}, 现实时钟为: ${relaTime}`);
   }
 
   /**
@@ -71,7 +71,7 @@ window.addEventListener('load', (): void => {
 
   /** 主循环 */
   function mainLoop(time: number): void {
-    relaTime = time;
+    // relaTime = time;
     // 请求下一帧
     requestAnimationFrame(mainLoop);
 
@@ -79,16 +79,17 @@ window.addEventListener('load', (): void => {
     const detla = time - gameTime;
     /** 游戏更新次数 */
     let ticks = detla > step ? Math.floor(detla / step) : 0;
-    /** 游戏时间流动 */
-    gameTime += ticks * step;
 
     // 如果 ticks 过大则认为游戏睡着了
     if (ticks > 50) {
+      console.log('睡着了');
+      gameTime = time;
       return;
     }
 
     // 更新游戏
     while (ticks--) {
+      gameTime += step;
       update();
     }
     // 更新视图
@@ -99,7 +100,7 @@ window.addEventListener('load', (): void => {
   function init(time: number): void {
     // 初始化时钟
     gameTime = time;
-    console.log(`游戏初始化, 当前时钟为: ${time}`);
+    // console.log(`游戏初始化, 当前时钟为: ${time}`);
 
     // 开始主循环
     mainLoop(time);
