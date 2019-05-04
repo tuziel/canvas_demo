@@ -18,8 +18,8 @@ window.addEventListener('load', (): void => {
   /** 游戏时钟 */
   let gameTime = 0;
   /** 现实时钟 */
-  // let relaTime = 0;
-  // console.log(`游戏步长为: ${step}`);
+  let relaTime = 0;
+  console.log(`游戏步长为: ${step}`);
 
   /** 游戏数据 */
   let count = 0;
@@ -38,6 +38,14 @@ window.addEventListener('load', (): void => {
   }
 
   /**
+   * 更新数字
+   */
+  function updateCount() {
+    count += step;
+    console.log(`更新数据到: ${count}, 游戏时钟为: ${gameTime}, 现实时钟为: ${relaTime}`);
+  }
+
+  /**
    * 渲染数字
    *
    * @param detla 当前时间领先游戏时间的长度
@@ -48,30 +56,28 @@ window.addEventListener('load', (): void => {
     context.font = '40px sans-serif';
     context.fillStyle = '#000000';
     context.fillText(text, 20, 100);
-    // console.log(`！更新视图到: ${text}, 游戏时钟为: ${gameTime}, 现实时钟为: ${relaTime}`);
+    console.log(`！更新视图到: ${text}, 游戏时钟为: ${gameTime}, 现实时钟为: ${relaTime}`);
   }
 
   /**
    * 更新游戏
    */
   function update(): void {
-    count += step;
-    // console.log(`更新数据到: ${count}, 游戏时钟为: ${gameTime}, 现实时钟为: ${relaTime}`);
+    gameTime += step;
+    updateCount();
   }
 
   /**
-   * 渲染视图
-   *
-   * @param detla 当前时间领先游戏时间的长度
+   * 更新视图
    */
-  function render(detla: number): void {
+  function render(): void {
+    const detla = relaTime - gameTime;
     drawBackground();
     drawaNum(detla);
   }
 
   /** 主循环 */
   function mainLoop(time: number): void {
-    // relaTime = time;
     // 请求下一帧
     requestAnimationFrame(mainLoop);
 
@@ -80,27 +86,28 @@ window.addEventListener('load', (): void => {
     /** 游戏更新次数 */
     let ticks = detla > step ? Math.floor(detla / step) : 0;
 
-    // 如果 ticks 过大则认为游戏睡着了
+    // 如果 ticks 过大则认为游戏处于休眠状态
     if (ticks > 50) {
-      console.log('睡着了');
-      gameTime = time;
+      gameTime = time - (relaTime - gameTime);
+      console.log(`游戏休眠, 游戏时钟: ${gameTime}, 现实时钟: ${time}`);
       return;
     }
+    relaTime = time;
+    console.log(`loop! 游戏时钟: ${gameTime}, 现实时钟: ${relaTime}`);
 
     // 更新游戏
     while (ticks--) {
-      gameTime += step;
       update();
     }
     // 更新视图
-    render(time - gameTime);
+    render();
   }
 
   /** 初始化函数 */
   function init(time: number): void {
     // 初始化时钟
     gameTime = time;
-    // console.log(`游戏初始化, 当前时钟为: ${time}`);
+    console.log(`游戏初始化, 当前时钟为: ${time}`);
 
     // 开始主循环
     mainLoop(time);
