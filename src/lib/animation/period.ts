@@ -1,14 +1,5 @@
 import Ani from './ani';
 
-interface IPhase {
-  /** 坐标位置 */
-  coord: number;
-  /** 周期中位置 */
-  phase: number;
-  /** 周期次数 */
-  times: number;
-}
-
 export default class PeriodAni extends Ani {
   /**
    * 获取当前时间在周期中的位置
@@ -21,11 +12,8 @@ export default class PeriodAni extends Ani {
     period: number,
     startStamp: number,
     time: number,
-  ): IPhase {
-    const coord = (time - startStamp) / period;
-    const times = Math.floor(coord);
-    const phase = (coord + 1) % 1;
-    return { coord, phase, times };
+  ): number {
+    return (time - startStamp) / period;
   }
 
   /** 动画周期 */
@@ -49,7 +37,7 @@ export default class PeriodAni extends Ani {
   constructor(
     startStamp: number,
     period: number,
-    periodRenderer: (phase: number, times?: number) => void,
+    periodRenderer: (phase: number) => void,
   ) {
     super(startStamp, PeriodAni.prototype.render);
     this.periodRenderer = periodRenderer;
@@ -65,8 +53,7 @@ export default class PeriodAni extends Ani {
     if (!this.state) {
       time = this.pauseStamp;
     }
-    const phase = PeriodAni.getPhase(this.period, this.startStamp, time);
-    this.periodRenderer(phase.phase, phase.times);
+    this.periodRenderer(PeriodAni.getPhase(this.period, this.startStamp, time));
   }
 
   /**
@@ -81,7 +68,7 @@ export default class PeriodAni extends Ani {
       this.pauseStamp = time;
     }
     const phase = PeriodAni.getPhase(this.period, this.startStamp, time);
-    this.startStamp = time - (period * phase.coord);
+    this.startStamp = time - (period * phase);
     this.period = period;
   }
 }
