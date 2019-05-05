@@ -24,7 +24,7 @@ export default class ImageLoader implements ILoader {
     return this.image.complete;
   }
 
-  public use(callback: (media: HTMLImageElement) => void): void {
+  public use(callback: (media: HTMLImageElement) => void): this {
     if (this.isComplete()) {
       callback(this.image);
     } else {
@@ -32,5 +32,6 @@ export default class ImageLoader implements ILoader {
         callback(this.image);
       });
     }
+    return this;
   }
 }
