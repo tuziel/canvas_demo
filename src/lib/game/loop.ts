@@ -47,7 +47,7 @@ export default class Loop {
   /**
    * 开始循环
    */
-  public start() {
+  public start(): void {
     if (this.id >= 0) {
       requestAnimationFrame((t) => this.mainLoop(t));
     }
@@ -56,7 +56,7 @@ export default class Loop {
   /**
    * 停止循环
    */
-  public stop() {
+  public stop(): void {
     cancelAnimationFrame(this.id);
     this.id = -1;
   }
@@ -66,7 +66,7 @@ export default class Loop {
    *
    * @param updater
    */
-  public update(updater: gameUpdater) {
+  public update(updater: gameUpdater): void {
     this.updater = updater;
   }
   /**
@@ -74,7 +74,7 @@ export default class Loop {
    *
    * @param renderer
    */
-  public render(renderer: gameRenderer) {
+  public render(renderer: gameRenderer): void {
     this.renderer = renderer;
   }
 
@@ -83,10 +83,9 @@ export default class Loop {
    *
    * @param time 当前时钟
    */
-  protected init(time: number) {
+  protected init(time: number): void {
     // 初始化游戏时钟
     this.clock = time;
-    console.log(`初始化时间: ${time}`);
 
     // 开始主循环
     this.mainLoop(time);
@@ -113,21 +112,18 @@ export default class Loop {
 
     // 如果 ticks 过大则认为游戏处于休眠状态或机器无法跟上
     // 此时只执行一次更新
-    if (ticks > 50) {
-      this.clock = time - lastDetla - step;
-      ticks = 1;
-      console.log(`休眠`);
-    }
-
-    // 更新游戏
-    while (ticks--) {
-      this.clock += step;
+    if (ticks < 50) {
+      // 更新游戏
+      while (ticks--) {
+        this.clock += step;
+        this.updater(++this.ticks);
+      }
+    } else {
+      this.clock = time - lastDetla;
       this.updater(++this.ticks);
-      console.log(`当前游戏时钟: ${this.clock}, 当前真实时钟: ${time}, 当前ticks: ${this.ticks}`);
     }
 
     // 更新视图
     this.renderer(time - this.clock);
-    console.log(`! 当前游戏时钟: ${this.clock}, 当前真实时钟: ${time}`);
   }
 }
