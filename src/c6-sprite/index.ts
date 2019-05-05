@@ -1,4 +1,5 @@
 import '../lib/polyfill/requestAnimationFrame';
+import Loop from '../lib/game/loop';
 
 window.addEventListener('load', (): void => {
   // 判断兼容性
@@ -15,10 +16,6 @@ window.addEventListener('load', (): void => {
 
   /** 步长 */
   const step = 10;
-  /** 游戏时钟 */
-  let gameTime = 0;
-  /** 现实时钟 */
-  let relaTime = 0;
   console.log(`游戏步长为: ${step}`);
 
   /** 游戏数据 */
@@ -42,7 +39,6 @@ window.addEventListener('load', (): void => {
    */
   function updateCount() {
     count += step;
-    console.log(`更新数据到: ${count}, 游戏时钟为: ${gameTime}, 现实时钟为: ${relaTime}`);
   }
 
   /**
@@ -56,66 +52,14 @@ window.addEventListener('load', (): void => {
     context.font = '40px sans-serif';
     context.fillStyle = '#000000';
     context.fillText(text, 20, 100);
-    console.log(`！更新视图到: ${text}, 游戏时钟为: ${gameTime}, 现实时钟为: ${relaTime}`);
   }
 
-  /**
-   * 更新游戏
-   */
-  function update(): void {
-    gameTime += step;
+  const gameloop = new Loop(step);
+  gameloop.update(() => {
     updateCount();
-  }
-
-  /**
-   * 更新视图
-   */
-  function render(): void {
-    const detla = relaTime - gameTime;
+  });
+  gameloop.render((detla) => {
     drawBackground();
     drawaNum(detla);
-  }
-
-  /** 主循环 */
-  function mainLoop(time: number): void {
-    // 请求下一帧
-    requestAnimationFrame(mainLoop);
-
-    /** 上一帧到现在的时间间隔 */
-    const detla = time - gameTime;
-    /** 游戏更新次数 */
-    let ticks = detla > step ? Math.floor(detla / step) : 0;
-
-    // 如果 ticks 过大则认为游戏处于休眠状态
-    if (ticks > 50) {
-      gameTime = time - (relaTime - gameTime);
-      console.log(`游戏休眠, 游戏时钟: ${gameTime}, 现实时钟: ${time}`);
-      return;
-    }
-    relaTime = time;
-    console.log(`loop! 游戏时钟: ${gameTime}, 现实时钟: ${relaTime}`);
-
-    // 更新游戏
-    while (ticks--) {
-      update();
-    }
-    // 更新视图
-    render();
-  }
-
-  /** 初始化函数 */
-  function init(time: number): void {
-    // 初始化时钟
-    gameTime = time;
-    console.log(`游戏初始化, 当前时钟为: ${time}`);
-
-    // 开始主循环
-    mainLoop(time);
-  }
-
-  /** 入口函数 */
-  (function main(): void {
-    requestAnimationFrame(init);
-  })();
-
+  });
 });
