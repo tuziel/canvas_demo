@@ -41,15 +41,16 @@ export default class Loop {
     this.step = step > 0 ? step : 10;
     this.updater = this.renderer = () => void 0;
 
-    requestAnimationFrame((t) => this.init(t));
+    this.id = requestAnimationFrame((t) => this.init(t));
   }
 
   /**
    * 开始循环
    */
   public start(): void {
-    if (this.id >= 0) {
-      requestAnimationFrame((t) => this.mainLoop(t));
+    if (this.id < 0) {
+      // 假装休眠后开始
+      this.mainLoop(Infinity);
     }
   }
 
@@ -110,15 +111,15 @@ export default class Loop {
     // 更新真实时钟
     this.relaClock = time;
 
+    // 更新游戏
     // 如果 ticks 过大则认为游戏处于休眠状态或机器无法跟上
-    // 此时只执行一次更新
     if (ticks < 50) {
-      // 更新游戏
       while (ticks--) {
         this.clock += step;
         this.updater(++this.ticks);
       }
     } else {
+      // 但至少执行一次更新
       this.clock = time - lastDetla;
       this.updater(++this.ticks);
     }
