@@ -32,7 +32,7 @@ export default class PeriodAni extends Ani {
    *
    * @param startStamp 动画开始时间
    * @param period 周期
-   * @param renderer 渲染回调
+   * @param periodRenderer 渲染回调
    */
   constructor(
     startStamp: number,

@@ -9,8 +9,9 @@ type gameUpdater = (ticks: number) => void;
  * 渲染回调
  *
  * @param detla 真实时钟领先游戏时钟的差值
+ * @param runningTime 运行时长
  */
-type gameRenderer = (detla: number) => void;
+type gameRenderer = (detla: number, runningTime: number) => void;
 
 export default class Loop {
   /** 游戏总 tick 数 */
@@ -125,6 +126,7 @@ export default class Loop {
     }
 
     // 更新视图
-    this.renderer(time - this.clock);
+    const currentDetla = time - this.clock;
+    this.renderer(currentDetla, this.ticks * this.step + currentDetla);
   }
 }
