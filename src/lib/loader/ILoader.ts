@@ -7,4 +7,6 @@ interface ILoader {
   isComplete: () => boolean;
   /** 使用资源 */
   use: (callback: (media: HTMLElement) => void) => this;
+  /** 获取资源 */
+  getMedia: () => HTMLElement;
 }

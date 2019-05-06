@@ -38,7 +38,7 @@ export default class ImageLoader implements ILoader {
   }
 
   /**
-   * 使用资源
+   * 使用图片
    *
    * @param callback 回调
    */
@@ -51,5 +51,12 @@ export default class ImageLoader implements ILoader {
       });
     }
     return this;
+  }
+
+  /**
+   * 获取图片
+   */
+  public getMedia() {
+    return this.image;
   }
 }
