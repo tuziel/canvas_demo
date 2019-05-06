@@ -22,7 +22,7 @@ export default class C {
   /**
    * 清空画布
    */
-  public clear(): C {
+  public clear(): this {
     const $el = this.$el;
     return this.clearRect(0, 0, $el.width, $el.height);
   }
@@ -35,7 +35,7 @@ export default class C {
    * @param width 矩形的宽度
    * @param height 矩形的高度
    */
-  public clearRect(x: number, y: number, width: number, height: number): C {
+  public clearRect(x: number, y: number, width: number, height: number): this {
     this.c2d.clearRect(x, y, width, height);
     return this;
   }
@@ -46,12 +46,12 @@ export default class C {
    * @param path 需要填充的 Path2D 路径
    * @param fillRule 非零环绕或奇偶环绕
    */
-  public fill(fillRule?: CanvasFillRule): C;
-  public fill(path: Path2D, fillRule?: CanvasFillRule): C;
+  public fill(fillRule?: CanvasFillRule): this;
+  public fill(path: Path2D, fillRule?: CanvasFillRule): this;
   public fill(
     path?: Path2D | CanvasFillRule,
     fillRule?: CanvasFillRule,
-  ): C {
+  ): this {
     const c2d = this.c2d;
     if (fillRule) {
       c2d.fill(path as Path2D, fillRule);
@@ -71,7 +71,7 @@ export default class C {
    * @param width 矩形的宽度
    * @param height 矩形的高度
    */
-  public fillRect(x: number, y: number, width: number, height: number): C {
+  public fillRect(x: number, y: number, width: number, height: number): this {
     this.c2d.fillRect(x, y, width, height);
     return this;
   }
@@ -88,7 +88,7 @@ export default class C {
   public fillRectS(
     style: string | CanvasGradient | CanvasPattern,
     x: number, y: number, width: number, height: number,
-  ): C {
+  ): this {
     const c2d = this.c2d;
     c2d.save();
     style && (c2d.fillStyle = style);
@@ -107,16 +107,16 @@ export default class C {
   public fillS(
     style: string | CanvasGradient | CanvasPattern,
     fillRule?: CanvasFillRule,
-  ): C;
+  ): this;
   public fillS(
     style: string | CanvasGradient | CanvasPattern,
     path: Path2D, fillRule?: CanvasFillRule,
-  ): C;
+  ): this;
   public fillS(
     style: string | CanvasGradient | CanvasPattern,
     path?: Path2D | CanvasFillRule,
     fillRule?: CanvasFillRule,
-  ): C {
+  ): this {
     const c2d = this.c2d;
     c2d.save();
     style && (c2d.fillStyle = style);
@@ -136,7 +136,7 @@ export default class C {
    *
    * @param style 填充样式
    */
-  public fillStyle(style: string | CanvasGradient | CanvasPattern): C {
+  public fillStyle(style: string | CanvasGradient | CanvasPattern): this {
     this.c2d.fillStyle = style;
     return this;
   }
@@ -146,7 +146,7 @@ export default class C {
    *
    * @param font 字体样式
    */
-  public font(font: string): C {
+  public font(font: string): this {
     this.c2d.font = font;
     return this;
   }
@@ -156,7 +156,7 @@ export default class C {
    *
    * @param alpha 图形和图片透明度
    */
-  public globalAlpha(alpha: number): C {
+  public globalAlpha(alpha: number): this {
     this.c2d.globalAlpha = alpha;
     return this;
   }
@@ -166,7 +166,7 @@ export default class C {
    *
    * @param type 合成类型
    */
-  public globalCompositeOperation(type: string): C {
+  public globalCompositeOperation(type: string): this {
     this.c2d.globalCompositeOperation = type;
     return this;
   }
@@ -176,7 +176,7 @@ export default class C {
    *
    * @param value 图片是否平滑
    */
-  public imageSmoothingEnabled(value: boolean): C {
+  public imageSmoothingEnabled(value: boolean): this {
     this.c2d.imageSmoothingEnabled = value;
     return this;
   }
@@ -186,7 +186,7 @@ export default class C {
    *
    * @param lineCap 末端属性
    */
-  public lineCap(lineCap: CanvasLineCap): C {
+  public lineCap(lineCap: CanvasLineCap): this {
     this.c2d.lineCap = lineCap;
     return this;
   }
@@ -196,7 +196,7 @@ export default class C {
    *
    * @param offset 偏移量
    */
-  public lineDashOffset(offset: number): C {
+  public lineDashOffset(offset: number): this {
     this.c2d.lineDashOffset = offset;
     return this;
   }
@@ -206,7 +206,7 @@ export default class C {
    *
    * @param lineJoin 连接属性
    */
-  public lineJoin(lineJoin: CanvasLineJoin): C {
+  public lineJoin(lineJoin: CanvasLineJoin): this {
     this.c2d.lineJoin = lineJoin;
     return this;
   }
@@ -216,7 +216,7 @@ export default class C {
    *
    * @param width 线条厚度
    */
-  public lineWidth(width: number): C {
+  public lineWidth(width: number): this {
     this.c2d.lineWidth = width;
     return this;
   }
@@ -226,7 +226,7 @@ export default class C {
    *
    * @param limit 最大距离
    */
-  public miterLimit(limit: number): C {
+  public miterLimit(limit: number): this {
     this.c2d.miterLimit = limit;
     return this;
   }
@@ -242,7 +242,7 @@ export default class C {
     type: K,
     listener: (this: HTMLCanvasElement, ev: HTMLElementEventMap[K]) => any,
     options?: boolean | EventListenerOptions,
-  ): C {
+  ): this {
     this.$el.removeEventListener(type, listener, options);
     return this;
   }
@@ -258,7 +258,7 @@ export default class C {
     type: K,
     listener: (this: HTMLCanvasElement, ev: HTMLElementEventMap[K]) => any,
     options?: boolean | AddEventListenerOptions,
-  ): C {
+  ): this {
     this.$el.addEventListener(type, listener, options);
     return this;
   }
@@ -266,7 +266,7 @@ export default class C {
   /**
    * 还原坐标系
    */
-  public resetTransform(): C {
+  public resetTransform(): this {
     this.resetTransform();
     return this;
   }
@@ -274,7 +274,7 @@ export default class C {
   /**
    * 还原上次状态
    */
-  public restore(): C {
+  public restore(): this {
     this.c2d.restore();
     return this;
   }
@@ -282,7 +282,7 @@ export default class C {
   /**
    * 保存当前状态
    */
-  public save(): C {
+  public save(): this {
     this.c2d.save();
     return this;
   }
@@ -293,7 +293,7 @@ export default class C {
    * @param width 画布的宽度
    * @param height 画布的高度
    */
-  public setSize(width: number, height: number): C {
+  public setSize(width: number, height: number): this {
     const $el = this.$el;
     $el.width = width;
     $el.height = height;
@@ -314,7 +314,7 @@ export default class C {
     m11: number, m12: number,
     m21: number, m22: number,
     dx: number, dy: number,
-  ): C {
+  ): this {
     this.c2d.setTransform(m11, m12, m21, m22, dx, dy);
     return this;
   }
@@ -324,7 +324,7 @@ export default class C {
    *
    * @param level 模糊效果程度
    */
-  public shadowBlur(level: number): C {
+  public shadowBlur(level: number): this {
     this.c2d.shadowBlur = level;
     return this;
   }
@@ -334,7 +334,7 @@ export default class C {
    *
    * @param color 阴影颜色
    */
-  public shadowColor(color: string): C {
+  public shadowColor(color: string): this {
     this.c2d.shadowColor = color;
     return this;
   }
@@ -344,7 +344,7 @@ export default class C {
    *
    * @param offset 水平偏移距离
    */
-  public shadowOffsetX(offset: number): C {
+  public shadowOffsetX(offset: number): this {
     this.c2d.shadowOffsetX = offset;
     return this;
   }
@@ -354,7 +354,7 @@ export default class C {
    *
    * @param offset 垂直偏移距离
    */
-  public shadowOffsetY(offset: number): C {
+  public shadowOffsetY(offset: number): this {
     this.c2d.shadowOffsetY = offset;
     return this;
   }
@@ -382,7 +382,7 @@ export default class C {
    * @param width 矩形的宽度
    * @param height 矩形的高度
    */
-  public strokeRect(x: number, y: number, width: number, height: number): C {
+  public strokeRect(x: number, y: number, width: number, height: number): this {
     this.c2d.strokeRect(x, y, width, height);
     return this;
   }
@@ -399,7 +399,7 @@ export default class C {
   public strokeRectS(
     style: string | CanvasGradient | CanvasPattern,
     x: number, y: number, width: number, height: number,
-  ): C {
+  ): this {
     const c2d = this.c2d;
     c2d.save();
     style && (c2d.strokeStyle = style);
@@ -435,7 +435,7 @@ export default class C {
    *
    * @param style 画笔样式
    */
-  public strokeStyle(style: string | CanvasGradient | CanvasPattern): C {
+  public strokeStyle(style: string | CanvasGradient | CanvasPattern): this {
     this.c2d.strokeStyle = style;
     return this;
   }
@@ -445,7 +445,7 @@ export default class C {
    *
    * @param align 对齐方式
    */
-  public textAlign(align: CanvasTextAlign): C {
+  public textAlign(align: CanvasTextAlign): this {
     this.c2d.textAlign = align;
     return this;
   }
@@ -455,7 +455,7 @@ export default class C {
    *
    * @param value 基线属性
    */
-  public textBaseline(value: CanvasTextBaseline): C {
+  public textBaseline(value: CanvasTextBaseline): this {
     this.c2d.textBaseline = value;
     return this;
   }
