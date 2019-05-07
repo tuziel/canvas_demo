@@ -67,7 +67,7 @@ window.addEventListener('load', (): void => {
   /** 执行操作队列 */
   function execCommanQueue(time: number): void {
     let comman;
-    while ((comman = commanQueue.pop())) {
+    while ((comman = commanQueue.shift())) {
       switch (comman.name) {
         case 'pause':
         case 'reset':

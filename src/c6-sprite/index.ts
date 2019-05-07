@@ -16,11 +16,14 @@ window.addEventListener('load', (): void => {
   const appWidth = app.width;
   const appHeight = app.height;
 
+  /** 操作队列 */
+  const commandQueue: Array<() => void> = [];
+
   // 加载图片
   const tanksLoader = new ImageLoader(require('./tanks_sheet.png'));
   const tanks = tanksLoader.getMedia();
 
-  const STEP = 10;
+  const STEP = 800;
   const UP = 0;
   const RIGHT = 1;
   const DOWN = 2;
@@ -29,9 +32,9 @@ window.addEventListener('load', (): void => {
   /** 坦克对象 */
   const tank = {
     /** 坐标 X */
-    x: 280,
+    x: 290,
     /** 坐标 Y */
-    y: 280,
+    y: 290,
     /** 宽度 */
     sizeX: 32,
     /** 高度 */
@@ -39,7 +42,15 @@ window.addEventListener('load', (): void => {
     /** 方向 */
     dir: UP,
     /** 移动速度 */
-    speed: 10 / STEP,
+    speed: 0.1 * STEP,
+    /**
+     * 转向
+     *
+     * @param dir 方向
+     */
+    turn(dir: 0 | 1 | 2 | 3) {
+      this.dir = dir;
+    },
   };
 
   /** 坦克动画 */
@@ -77,22 +88,10 @@ window.addEventListener('load', (): void => {
     let tankY = tank.y;
 
     switch (tank.dir) {
-      case UP: {
-        tankY -= speed;
-        break;
-      }
-      case DOWN: {
-        tankY += speed;
-        break;
-      }
-      case RIGHT: {
-        tankX += speed;
-        break;
-      }
-      case LEFT: {
-        tankX -= speed;
-        break;
-      }
+      case UP: { tankY -= speed; break; }
+      case DOWN: { tankY += speed; break; }
+      case RIGHT: { tankX += speed; break; }
+      case LEFT: { tankX -= speed; break; }
     }
 
     return {
@@ -125,11 +124,20 @@ window.addEventListener('load', (): void => {
     tank.y = pos.y;
   }
 
+  /** 更新操作 */
+  function execCommand() {
+    let cmd;
+    while ((cmd = commandQueue.shift())) {
+      cmd();
+    }
+  }
+
   /**
    * 更新游戏
    */
   function updater(): void {
     updateTank();
+    execCommand();
   }
 
   /**
@@ -139,13 +147,32 @@ window.addEventListener('load', (): void => {
     drawBackground();
     drawTank(detla, time);
   }
-  // 创建主循环
-  const gameloop = new Loop(STEP);
-  gameloop.update(updater);
-  gameloop.render(renderer);
 
-  // 等待图片加载完成
-  tanksLoader.then(() => {
-    gameloop.start();
-  });
+  /**
+   * 初始化键盘输入
+   */
+  function initEvent() {
+    window.addEventListener('keydown', (e) => {
+      switch (e.keyCode) {
+        case 37: { commandQueue.push(() => tank.turn(LEFT)); break; }
+        case 38: { commandQueue.push(() => tank.turn(UP)); break; }
+        case 39: { commandQueue.push(() => tank.turn(RIGHT)); break; }
+        case 40: { commandQueue.push(() => tank.turn(DOWN)); break; }
+      }
+    });
+  }
+
+  (function main() {
+    initEvent();
+
+    // 创建主循环
+    const gameloop = new Loop(STEP);
+    gameloop.update(updater);
+    gameloop.render(renderer);
+
+    // 等待图片加载完成
+    tanksLoader.then(() => {
+      gameloop.start();
+    });
+  })();
 });
