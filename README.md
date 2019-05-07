@@ -1,5 +1,14 @@
 # canvas demo
 
+## 安装说明
+
+* 需要 Node.js 10 以上版本
+* 使用 `npm i` 安装依赖
+* 使用 `npm run serve` 运行开发服务
+* 使用 `npm run build` 生成输出文件
+
+## 日志
+
 是的我又开新坑了
 
 * 2019/5/7  
