@@ -39,6 +39,10 @@ window.addEventListener('load', (): void => {
     sizeX: 32,
     /** 高度 */
     sizeY: 32,
+    /** 宽度 */
+    halfSizeX: 16,
+    /** 高度 */
+    halfSizeY: 16,
     /** 方向 */
     dir: UP,
     /** 移动速度 */
@@ -113,13 +117,19 @@ window.addEventListener('load', (): void => {
    */
   function drawTank(detla: number, time: number) {
     const pos = getTankPosition(detla * tank.speed / STEP);
+    const halfSizeX = tank.halfSizeX;
+    const halfSizeY = tank.halfSizeY;
     tankSpriteAni.render(time, (
       sourceX: number,
       sourceY: number,
       sizeX: number,
       sizeY: number,
     ) => {
-      context.drawImage(tanks, sourceX, sourceY, sizeX, sizeY, pos.x, pos.y, 32, 32);
+      context.setTransform(1, 0, 0, 1, 0, 0);
+      context.translate(pos.x + halfSizeX, pos.y + halfSizeY);
+      context.rotate(tank.dir * Math.PI / 2);
+      context.drawImage(tanks, sourceX, sourceY, sizeX, sizeY, -halfSizeX, -halfSizeY, tank.sizeX, tank.sizeY);
+      context.setTransform(1, 0, 0, 1, 0, 0);
     });
   }
 
