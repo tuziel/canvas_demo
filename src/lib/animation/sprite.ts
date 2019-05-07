@@ -38,6 +38,7 @@ export default class SpriteAni extends PeriodAni {
    * 渲染动画帧
    *
    * @param time 当前时间
+   * @param callback 渲染回调
    */
   public render(
     time: number,

@@ -3,8 +3,9 @@
  * 更新回调
  *
  * @param ticks 游戏总 tick 数
+ * @param runningTime 运行时长
  */
-type gameUpdater = (ticks: number) => void;
+type gameUpdater = (ticks: number, runningTime: number) => void;
 /**
  * 渲染回调
  *
@@ -114,19 +115,22 @@ export default class Loop {
 
     // 更新游戏
     // 如果 ticks 过大则认为游戏处于休眠状态或机器无法跟上
+    let currentTicks = this.ticks;
     if (ticks < 50) {
       while (ticks--) {
         this.clock += step;
-        this.updater(++this.ticks);
+        currentTicks = ++this.ticks;
+        this.updater(currentTicks, currentTicks * step);
       }
     } else {
       // 但至少执行一次更新
       this.clock = time - lastDetla;
-      this.updater(++this.ticks);
+      currentTicks = ++this.ticks;
+      this.updater(currentTicks, currentTicks * step);
     }
 
     // 更新视图
     const currentDetla = time - this.clock;
-    this.renderer(currentDetla, this.ticks * this.step + currentDetla);
+    this.renderer(currentDetla, currentTicks * step + currentDetla);
   }
 }

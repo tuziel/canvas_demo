@@ -19,6 +19,7 @@ export default class Ani {
    * 渲染动画帧
    *
    * @param time 当前时间
+   * @param callback 渲染回调
    */
   public render(time: number, callback: (time: number) => void): void {
     if (!this.state) {

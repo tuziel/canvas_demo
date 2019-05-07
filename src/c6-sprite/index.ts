@@ -1,7 +1,6 @@
 import '../lib/polyfill/requestAnimationFrame';
 import Loop from '../lib/game/loop';
 import ImageLoader from '../lib/loader/imageLoader';
-// import PeriodAni from '../lib/animation/period';
 import SpriteAni from '../lib/animation/sprite';
 
 window.addEventListener('load', (): void => {
@@ -39,12 +38,11 @@ window.addEventListener('load', (): void => {
     /** 方向 */
     dir: UP,
     /** 移动速度 */
-    speed: 0.1,
+    speed: 1,
   };
 
   /** 坦克动画 */
-  // const tankSportAni = new PeriodAni(0, 10000);
-  const tankSpriteAni = new SpriteAni(0, 200);
+  const tankSpriteAni = new SpriteAni(0, 80);
   // 添加雪碧图网格
   tankSpriteAni.push(32, 0, 32, 32);
   tankSpriteAni.push(64, 0, 32, 32);
@@ -87,8 +85,12 @@ window.addEventListener('load', (): void => {
   /**
    * 更新游戏
    */
-  function updater(): void {
+  function updater(_ticks: number, time: number): void {
     tank.y -= tank.speed;
+    if (tank.y <= 20) {
+      tank.y = 280;
+      tankSpriteAni.reset(time);
+    }
   }
 
   /**
