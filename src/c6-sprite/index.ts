@@ -17,13 +17,13 @@ window.addEventListener('load', (): void => {
   const appHeight = app.height;
 
   /** 操作队列 */
-  const commandQueue: Array<() => void> = [];
+  const commandQueue: Array<(time: number) => void> = [];
 
   // 加载图片
   const tanksLoader = new ImageLoader(require('./tanks_sheet.png'));
   const tanks = tanksLoader.getMedia();
 
-  const STEP = 800;
+  const STEP = 10;
   const UP = 0;
   const RIGHT = 1;
   const DOWN = 2;
@@ -43,6 +43,14 @@ window.addEventListener('load', (): void => {
     dir: UP,
     /** 移动速度 */
     speed: 0.1 * STEP,
+    /**
+     * 设置速度
+     *
+     * @param speed 速度
+     */
+    setSpeed(speed: number) {
+      this.speed = speed;
+    },
     /**
      * 转向
      *
@@ -95,8 +103,8 @@ window.addEventListener('load', (): void => {
     }
 
     return {
-      x: Math.min(Math.max(tankX, 5), appWidth - 5),
-      y: Math.min(Math.max(tankY, 5), appHeight - 5),
+      x: Math.min(Math.max(tankX, 5), appWidth - 5 - tank.sizeX),
+      y: Math.min(Math.max(tankY, 5), appHeight - 5 - tank.sizeY),
     };
   }
 
@@ -124,20 +132,24 @@ window.addEventListener('load', (): void => {
     tank.y = pos.y;
   }
 
-  /** 更新操作 */
-  function execCommand() {
+  /**
+   * 更新操作
+   *
+   * @param 更新时间
+   */
+  function execCommand(time: number) {
     let cmd;
     while ((cmd = commandQueue.shift())) {
-      cmd();
+      cmd(time);
     }
   }
 
   /**
    * 更新游戏
    */
-  function updater(): void {
+  function updater(_ticks: number, time: number): void {
     updateTank();
-    execCommand();
+    execCommand(time);
   }
 
   /**
@@ -154,10 +166,28 @@ window.addEventListener('load', (): void => {
   function initEvent() {
     window.addEventListener('keydown', (e) => {
       switch (e.keyCode) {
+        case 32: {
+          commandQueue.push((time) => {
+            tank.setSpeed(0.2 * STEP);
+            tankSpriteAni.setPeriod(40, time);
+          });
+          break;
+        }
         case 37: { commandQueue.push(() => tank.turn(LEFT)); break; }
         case 38: { commandQueue.push(() => tank.turn(UP)); break; }
         case 39: { commandQueue.push(() => tank.turn(RIGHT)); break; }
         case 40: { commandQueue.push(() => tank.turn(DOWN)); break; }
+      }
+    });
+    window.addEventListener('keyup', (e) => {
+      switch (e.keyCode) {
+        case 32: {
+          commandQueue.push((time) => {
+            tank.setSpeed(0.1 * STEP);
+            tankSpriteAni.setPeriod(80, time);
+          });
+          break;
+        }
       }
     });
   }
