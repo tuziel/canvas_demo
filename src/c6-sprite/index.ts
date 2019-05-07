@@ -22,10 +22,11 @@ window.addEventListener('load', (): void => {
 
   const STEP = 10;
   const UP = 0;
-  // const RIGHT = 1;
-  // const DOWN = 2;
-  // const LEFT = 3;
+  const RIGHT = 1;
+  const DOWN = 2;
+  const LEFT = 3;
 
+  /** 坦克对象 */
   const tank = {
     /** 坐标 X */
     x: 280,
@@ -38,7 +39,7 @@ window.addEventListener('load', (): void => {
     /** 方向 */
     dir: UP,
     /** 移动速度 */
-    speed: 1,
+    speed: 10 / STEP,
   };
 
   /** 坦克动画 */
@@ -67,30 +68,68 @@ window.addEventListener('load', (): void => {
   }
 
   /**
+   * 计算坦克位置
+   *
+   * @param speed 移动速度
+   */
+  function getTankPosition(speed: number): { x: number, y: number } {
+    let tankX = tank.x;
+    let tankY = tank.y;
+
+    switch (tank.dir) {
+      case UP: {
+        tankY -= speed;
+        break;
+      }
+      case DOWN: {
+        tankY += speed;
+        break;
+      }
+      case RIGHT: {
+        tankX += speed;
+        break;
+      }
+      case LEFT: {
+        tankX -= speed;
+        break;
+      }
+    }
+
+    return {
+      x: Math.min(Math.max(tankX, 5), appWidth - 5),
+      y: Math.min(Math.max(tankY, 5), appHeight - 5),
+    };
+  }
+
+  /**
    * 绘制坦克
    */
   function drawTank(detla: number, time: number) {
-    const tankX = tank.x;
-    const tankY = tank.y - detla * tank.speed / STEP;
+    const pos = getTankPosition(detla * tank.speed / STEP);
     tankSpriteAni.render(time, (
       sourceX: number,
       sourceY: number,
       sizeX: number,
       sizeY: number,
     ) => {
-      context.drawImage(tanks, sourceX, sourceY, sizeX, sizeY, tankX, tankY, 32, 32);
+      context.drawImage(tanks, sourceX, sourceY, sizeX, sizeY, pos.x, pos.y, 32, 32);
     });
+  }
+
+  /**
+   * 更新坦克数据
+   */
+  function updateTank() {
+    const pos = getTankPosition(tank.speed);
+    tank.x = pos.x;
+    tank.y = pos.y;
   }
 
   /**
    * 更新游戏
    */
-  function updater(_ticks: number, time: number): void {
-    tank.y -= tank.speed;
-    if (tank.y <= 20) {
-      tank.y = 280;
-      tankSpriteAni.reset(time);
-    }
+  function updater(): void {
+    updateTank();
   }
 
   /**
@@ -100,12 +139,13 @@ window.addEventListener('load', (): void => {
     drawBackground();
     drawTank(detla, time);
   }
+  // 创建主循环
+  const gameloop = new Loop(STEP);
+  gameloop.update(updater);
+  gameloop.render(renderer);
 
   // 等待图片加载完成
   tanksLoader.then(() => {
-    // 创建主循环
-    const gameloop = new Loop(STEP);
-    gameloop.update(updater);
-    gameloop.render(renderer);
+    gameloop.start();
   });
 });

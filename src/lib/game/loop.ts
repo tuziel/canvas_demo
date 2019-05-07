@@ -1,18 +1,17 @@
-
 /**
  * 更新回调
  *
  * @param ticks 游戏总 tick 数
  * @param runningTime 运行时长
  */
-type gameUpdater = (ticks: number, runningTime: number) => void;
+type GameUpdater = (ticks: number, runningTime: number) => void;
 /**
  * 渲染回调
  *
  * @param detla 真实时钟领先游戏时钟的差值
  * @param runningTime 运行时长
  */
-type gameRenderer = (detla: number, runningTime: number) => void;
+type GameRenderer = (detla: number, runningTime: number) => void;
 
 export default class Loop {
   /** 游戏总 tick 数 */
@@ -26,9 +25,9 @@ export default class Loop {
   /** 游戏步长 */
   protected step: number;
   /** 更新回调 */
-  protected updater: gameUpdater;
+  protected updater: GameUpdater;
   /** 渲染回调 */
-  protected renderer: gameRenderer;
+  protected renderer: GameRenderer;
 
   /**
    * 创建游戏循环
@@ -42,17 +41,21 @@ export default class Loop {
     step = Math.floor(step);
     this.step = step > 0 ? step : 10;
     this.updater = this.renderer = () => void 0;
-
-    this.id = requestAnimationFrame((t) => this.init(t));
   }
 
   /**
    * 开始循环
+   *
+   * @param callback 回调
    */
-  public start(): void {
+  public start(callback?: (time: number) => void): void {
     if (this.id < 0) {
-      // 假装休眠后开始
-      this.mainLoop(Infinity);
+      this.id = requestAnimationFrame((time) => {
+        const detla = time - this.relaClock;
+        this.clock += detla;
+        callback && callback(time);
+        this.mainLoop(time);
+      });
     }
   }
 
@@ -69,7 +72,7 @@ export default class Loop {
    *
    * @param updater
    */
-  public update(updater: gameUpdater): void {
+  public update(updater: GameUpdater): void {
     this.updater = updater;
   }
   /**
@@ -77,21 +80,8 @@ export default class Loop {
    *
    * @param renderer
    */
-  public render(renderer: gameRenderer): void {
+  public render(renderer: GameRenderer): void {
     this.renderer = renderer;
-  }
-
-  /**
-   * 初始化循环
-   *
-   * @param time 当前时钟
-   */
-  protected init(time: number): void {
-    // 初始化游戏时钟
-    this.clock = time;
-
-    // 开始主循环
-    this.mainLoop(time);
   }
 
   /**
