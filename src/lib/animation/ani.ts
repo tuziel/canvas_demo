@@ -7,24 +7,12 @@ export default class Ani {
   protected state = true;
 
   /**
-   * 渲染回调
-   *
-   * @param time 当前时间
-   */
-  protected renderer: (time: number) => void;
-
-  /**
    * 创建动画
    *
    * @param startStamp 动画开始时间
-   * @param renderer 渲染回调
    */
-  constructor(
-    startStamp: number,
-    renderer: (time: number) => void,
-  ) {
+  constructor(startStamp: number) {
     this.startStamp = this.pauseStamp = startStamp;
-    this.renderer = renderer;
   }
 
   /**
@@ -32,11 +20,11 @@ export default class Ani {
    *
    * @param time 当前时间
    */
-  public render(time: number): void {
+  public render(time: number, callback: (time: number) => void): void {
     if (!this.state) {
       time = this.pauseStamp;
     }
-    this.renderer(time);
+    callback(time);
   }
 
   /**

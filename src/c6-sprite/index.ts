@@ -1,6 +1,7 @@
 import '../lib/polyfill/requestAnimationFrame';
 import Loop from '../lib/game/loop';
 import ImageLoader from '../lib/loader/imageLoader';
+// import PeriodAni from '../lib/animation/period';
 import SpriteAni from '../lib/animation/sprite';
 
 window.addEventListener('load', (): void => {
@@ -20,33 +21,39 @@ window.addEventListener('load', (): void => {
   const tanksLoader = new ImageLoader(require('./tanks_sheet.png'));
   const tanks = tanksLoader.getMedia();
 
+  const STEP = 10;
+  const UP = 0;
+  // const RIGHT = 1;
+  // const DOWN = 2;
+  // const LEFT = 3;
+
   const tank = {
+    /** 坐标 X */
     x: 280,
+    /** 坐标 Y */
     y: 280,
-    relaX: 280,
-    relaY: 280,
+    /** 宽度 */
     sizeX: 32,
+    /** 高度 */
     sizeY: 32,
+    /** 方向 */
+    dir: UP,
+    /** 移动速度 */
+    speed: 0.1,
   };
 
   /** 坦克动画 */
-  const tanksAni = new SpriteAni(0, 200, (
-    sourceX: number,
-    sourceY: number,
-    sizeX: number,
-    sizeY: number,
-  ) => {
-    context.drawImage(tanks, sourceX, sourceY, sizeX, sizeY, tank.relaX, tank.relaY, 32, 32);
-  });
+  // const tankSportAni = new PeriodAni(0, 10000);
+  const tankSpriteAni = new SpriteAni(0, 200);
   // 添加雪碧图网格
-  tanksAni.push(32, 0, 32, 32);
-  tanksAni.push(64, 0, 32, 32);
-  tanksAni.push(96, 0, 32, 32);
-  tanksAni.push(128, 0, 32, 32);
-  tanksAni.push(160, 0, 32, 32);
-  tanksAni.push(192, 0, 32, 32);
-  tanksAni.push(224, 0, 32, 32);
-  tanksAni.push(0, 32, 32, 32);
+  tankSpriteAni.push(32, 0, 32, 32);
+  tankSpriteAni.push(64, 0, 32, 32);
+  tankSpriteAni.push(96, 0, 32, 32);
+  tankSpriteAni.push(128, 0, 32, 32);
+  tankSpriteAni.push(160, 0, 32, 32);
+  tankSpriteAni.push(192, 0, 32, 32);
+  tankSpriteAni.push(224, 0, 32, 32);
+  tankSpriteAni.push(0, 32, 32, 32);
 
   /**
    * 绘制背景
@@ -65,16 +72,23 @@ window.addEventListener('load', (): void => {
    * 绘制坦克
    */
   function drawTank(detla: number, time: number) {
-    tank.relaX = tank.x;
-    tank.relaY = tank.y - detla / 100;
-    tanksAni.render(time);
+    const tankX = tank.x;
+    const tankY = tank.y - detla * tank.speed / STEP;
+    tankSpriteAni.render(time, (
+      sourceX: number,
+      sourceY: number,
+      sizeX: number,
+      sizeY: number,
+    ) => {
+      context.drawImage(tanks, sourceX, sourceY, sizeX, sizeY, tankX, tankY, 32, 32);
+    });
   }
 
   /**
    * 更新游戏
    */
   function updater(): void {
-    tank.y -= 1;
+    tank.y -= tank.speed;
   }
 
   /**
@@ -88,7 +102,7 @@ window.addEventListener('load', (): void => {
   // 等待图片加载完成
   tanksLoader.then(() => {
     // 创建主循环
-    const gameloop = new Loop(100);
+    const gameloop = new Loop(STEP);
     gameloop.update(updater);
     gameloop.render(renderer);
   });

@@ -20,27 +20,13 @@ export default class PeriodAni extends Ani {
   protected period: number;
 
   /**
-   * 渲染回调
-   *
-   * @param phase 周期中的位置
-   * @param times 第几个周期
-   */
-  protected periodRenderer: (phase: number, times?: number) => void;
-
-  /**
    * 创建周期动画
    *
    * @param startStamp 动画开始时间
    * @param period 周期
-   * @param periodRenderer 渲染回调
    */
-  constructor(
-    startStamp: number,
-    period: number,
-    periodRenderer: (phase: number) => void,
-  ) {
-    super(startStamp, PeriodAni.prototype.render);
-    this.periodRenderer = periodRenderer;
+  constructor(startStamp: number, period: number) {
+    super(startStamp);
     this.period = period;
   }
 
@@ -49,11 +35,12 @@ export default class PeriodAni extends Ani {
    *
    * @param time 当前时间
    */
-  public render(time: number): void {
+  public render(time: number, callback: (phase: number) => void): void {
     if (!this.state) {
       time = this.pauseStamp;
     }
-    this.periodRenderer(PeriodAni.getPhase(this.period, this.startStamp, time));
+    const phase = PeriodAni.getPhase(this.period, this.startStamp, time);
+    callback(phase);
   }
 
   /**

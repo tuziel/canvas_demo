@@ -31,13 +31,7 @@ window.addEventListener('load', (): void => {
   const radius = 100;
 
   /** 圆周运动动画 */
-  const aniCircle = new PeriodAni(0, +$period.value || 1000, (phase: number) => {
-    const theta = Math.PI * 2 * phase;
-    const x2 = x + radius * Math.cos(theta);
-    const y2 = y + radius * Math.sin(theta);
-    context.fillStyle = '#000000';
-    context.fillRect(x2, y2, 5, 5);
-  });
+  const aniCircle = new PeriodAni(0, +$period.value || 1000);
   aniCircle.pause(0);
 
   /**
@@ -92,7 +86,13 @@ window.addEventListener('load', (): void => {
   function mainLoop(time: number): void {
     execCommanQueue(time);
     drawBackground();
-    aniCircle.render(time);
+    aniCircle.render(time, (phase: number) => {
+      const theta = Math.PI * 2 * phase;
+      const x2 = x + radius * Math.cos(theta);
+      const y2 = y + radius * Math.sin(theta);
+      context.fillStyle = '#000000';
+      context.fillRect(x2, y2, 5, 5);
+    });
     requestAnimationFrame(mainLoop);
   }
 
