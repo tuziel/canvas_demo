@@ -24,10 +24,11 @@ window.addEventListener('load', (): void => {
   const tanks = tanksLoader.getMedia();
 
   const STEP = 10;
-  const UP = 0;
-  const RIGHT = 1;
-  const DOWN = 2;
-  const LEFT = 3;
+  const PI = Math.PI;
+  const RIGHT = 0;
+  const DOWN = PI / 2;
+  const LEFT = PI;
+  const UP = PI * 3 / 2;
 
   /** 坦克对象 */
   const tank = {
@@ -44,7 +45,7 @@ window.addEventListener('load', (): void => {
     /** 高度 */
     halfSizeY: 16,
     /** 方向 */
-    dir: UP,
+    arc: UP,
     /** 移动速度 */
     speed: 0.1 * STEP,
     /**
@@ -58,10 +59,10 @@ window.addEventListener('load', (): void => {
     /**
      * 转向
      *
-     * @param dir 方向
+     * @param arc 弧度
      */
-    turn(dir: 0 | 1 | 2 | 3) {
-      this.dir = dir;
+    turn(arc: number) {
+      this.arc = arc;
     },
   };
 
@@ -96,15 +97,8 @@ window.addEventListener('load', (): void => {
    * @param speed 移动速度
    */
   function getTankPosition(speed: number): { x: number, y: number } {
-    let tankX = tank.x;
-    let tankY = tank.y;
-
-    switch (tank.dir) {
-      case UP: { tankY -= speed; break; }
-      case DOWN: { tankY += speed; break; }
-      case RIGHT: { tankX += speed; break; }
-      case LEFT: { tankX -= speed; break; }
-    }
+    const tankX = tank.x + Math.cos(tank.arc) * speed;
+    const tankY = tank.y + Math.sin(tank.arc) * speed;
 
     return {
       x: Math.min(Math.max(tankX, 5), appWidth - 5 - tank.sizeX),
@@ -126,7 +120,7 @@ window.addEventListener('load', (): void => {
       sizeY: number,
     ) => {
       context.translate(pos.x + halfSizeX, pos.y + halfSizeY);
-      context.rotate(tank.dir * Math.PI / 2);
+      context.rotate(tank.arc + PI / 2);
       context.drawImage(tanks, sourceX, sourceY, sizeX, sizeY, -halfSizeX, -halfSizeY, tank.sizeX, tank.sizeY);
       context.setTransform(1, 0, 0, 1, 0, 0);
     });
