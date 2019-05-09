@@ -8,10 +8,10 @@ type GameUpdater = (ticks: number, tickTime: number) => void;
 /**
  * 渲染回调
  *
- * @param detla 真实时钟领先游戏时钟的差值
+ * @param detlaTicks 真实时钟领先游戏时钟的 tick 差值
  * @param tickTime tick 总时长
  */
-type GameRenderer = (detla: number, tickTime: number) => void;
+type GameRenderer = (detlaTicks: number, tickTime: number) => void;
 
 /**
  * 获取当前时间戳
@@ -144,7 +144,7 @@ export default class Loop {
 
     // 更新视图
     const currentDetla = time - clock;
-    this.renderer(currentDetla, ticks * step + currentDetla);
+    this.renderer(currentDetla / step, ticks * step + currentDetla);
 
     // 更新时钟
     this.ticks = ticks;

@@ -110,7 +110,7 @@ window.addEventListener('load', (): void => {
    * 绘制坦克
    */
   function drawTank(detla: number, time: number) {
-    const pos = getTankPosition(detla * tank.speed / STEP);
+    const pos = getTankPosition(detla * tank.speed);
     const halfSizeX = tank.halfSizeX;
     const halfSizeY = tank.halfSizeY;
     tankSpriteAni.render(time, (
