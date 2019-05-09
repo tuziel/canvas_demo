@@ -2,26 +2,37 @@
  * 更新回调
  *
  * @param ticks 游戏总 tick 数
- * @param runningTime 运行时长
+ * @param tickTime tick 总时长
  */
-type GameUpdater = (ticks: number, runningTime: number) => void;
+type GameUpdater = (ticks: number, tickTime: number) => void;
 /**
  * 渲染回调
  *
  * @param detla 真实时钟领先游戏时钟的差值
- * @param runningTime 运行时长
+ * @param tickTime tick 总时长
  */
-type GameRenderer = (detla: number, runningTime: number) => void;
+type GameRenderer = (detla: number, tickTime: number) => void;
+
+/**
+ * 获取当前时间戳
+ */
+const now = (() => {
+  if (Date.now) {
+    return Date.now;
+  } else {
+    return () => new Date().getTime();
+  }
+})();
 
 export default class Loop {
   /** 游戏总 tick 数 */
-  protected ticks: number;
+  protected ticks: number = 0;
   /** 游戏时钟 */
-  protected clock: number;
+  protected clock: number = 0;
   /** 真实时钟 */
-  protected relaClock: number;
+  protected realClock: number = 0;
   /** RAF / 定时器 id */
-  protected id: number;
+  protected id: number = -1;
   /** 游戏步长 */
   protected step: number;
   /** 更新回调 */
@@ -34,10 +45,6 @@ export default class Loop {
    * @param step 游戏步长
    */
   constructor(step: number = 10) {
-    this.ticks = 0;
-    this.clock = 0;
-    this.relaClock = 0;
-    this.id = -1;
     step = Math.floor(step);
     this.step = step > 0 ? step : 10;
     this.updater = this.renderer = () => void 0;
@@ -51,8 +58,9 @@ export default class Loop {
   public start(callback?: (time: number) => void): void {
     if (this.id < 0) {
       this.id = requestAnimationFrame((time) => {
-        const detla = time - this.relaClock;
+        const detla = time - this.realClock;
         this.clock += detla;
+        this.realClock = time;
         callback && callback(time);
         this.mainLoop(time);
       });
@@ -92,35 +100,55 @@ export default class Loop {
     // 请求下一帧
     this.id = requestAnimationFrame((t) => this.mainLoop(t));
 
-    const step = this.step;
-    /** 上一帧到现在的时间间隔 */
-    const detla = time - this.clock;
-    /** 上次的 detla */
-    const lastDetla = this.relaClock - this.clock;
-    /** 游戏更新次数 */
-    let ticks = detla > this.step ? Math.floor(detla / this.step) : 0;
+    /** 循环开始时间 */
+    const startStamp = now();
 
-    // 更新真实时钟
-    this.relaClock = time;
+    const step = this.step;
+    let ticks = this.ticks;
+    let clock = this.clock;
+
+    /** 当前时钟领先游戏时钟的长度 */
+    const detla = time - clock;
+
+    // 游戏时间领先，跳过本次循环
+    if (detla < 0) { return; }
+
+    /** 上次的 detla */
+    const lastDetla = this.realClock - clock;
+    /** 本次循环的更新次数 */
+    let updateTicks = detla > step ? Math.floor(detla / step) : 0;
+    /** 本次循环增加的游戏时间 */
+    let updateTime = updateTicks * step;
 
     // 更新游戏
-    // 如果 ticks 过大则认为游戏处于休眠状态或机器无法跟上
-    let currentTicks = this.ticks;
-    if (ticks < 50) {
-      while (ticks--) {
-        this.clock += step;
-        currentTicks = ++this.ticks;
-        this.updater(currentTicks, currentTicks * step);
+    // 如果 ticks 过大则认为游戏处于休眠状态
+    if (updateTicks < 50) {
+      while (updateTicks--) {
+        ticks++;
+        this.updater(ticks, ticks * step);
+        // 超时则停止更新
+        const costTime = now() - startStamp;
+        if (costTime > updateTime) {
+          clock = time = time + costTime;
+          updateTime = 0;
+          break;
+        }
       }
+      clock += updateTime;
     } else {
       // 但至少执行一次更新
-      this.clock = time - lastDetla;
-      currentTicks = ++this.ticks;
-      this.updater(currentTicks, currentTicks * step);
+      ticks++;
+      clock = time - lastDetla;
+      this.updater(ticks, ticks * step);
     }
 
     // 更新视图
-    const currentDetla = time - this.clock;
-    this.renderer(currentDetla, currentTicks * step + currentDetla);
+    const currentDetla = time - clock;
+    this.renderer(currentDetla, ticks * step + currentDetla);
+
+    // 更新时钟
+    this.ticks = ticks;
+    this.clock = clock;
+    this.realClock = time;
   }
 }
