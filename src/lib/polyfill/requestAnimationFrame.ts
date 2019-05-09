@@ -1,6 +1,17 @@
 (() => {
+  /**
+   * 获取当前时间戳
+   */
+  const now = (() => {
+    if (Date.now) {
+      return Date.now;
+    } else {
+      return () => new Date().getTime();
+    }
+  })();
+
   /** 打开页面的时间戳 */
-  const __TIMESTAMP__ = +new Date();
+  const __TIMESTAMP__ = now();
 
   /**
    * 请求动画绘制
@@ -17,7 +28,7 @@
     (window as any).msRequestAnimationFrame ||
     ((callback: FrameRequestCallback) =>
       window.setTimeout(() => {
-        const time = +new Date() - __TIMESTAMP__;
+        const time = now() - __TIMESTAMP__;
         callback(time);
       }, 1000 / 60));
 
