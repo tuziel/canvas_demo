@@ -125,7 +125,6 @@ window.addEventListener('load', (): void => {
       sizeX: number,
       sizeY: number,
     ) => {
-      context.setTransform(1, 0, 0, 1, 0, 0);
       context.translate(pos.x + halfSizeX, pos.y + halfSizeY);
       context.rotate(tank.dir * Math.PI / 2);
       context.drawImage(tanks, sourceX, sourceY, sizeX, sizeY, -halfSizeX, -halfSizeY, tank.sizeX, tank.sizeY);
