@@ -18,15 +18,17 @@ window.addEventListener('load', (): void => {
   // 常量
   const PI = Math.PI;
   const PI2 = PI * 2;
+  const random = Math.random;
 
   /** 存放所有物件的列表 */
   const ballList: Ball[] = [];
 
   let count = 10;
   while (count--) {
-    const ball = new Ball(5 + Math.random() * 10 >>> 0);
-    ball.setPosition(Math.random() * appWidth >>> 0, Math.random() * appHeight >>> 0);
-    ball.setArc(Math.random() * PI2);
+    const ball = new Ball(5 + random() * 10 >>> 0);
+    ball.setPosition(random() * appWidth >>> 0, random() * appHeight >>> 0);
+    ball.setArc(random() * PI2);
+    ball.setSpeed(0.1 + random() * 1.1);
     ballList.push(ball);
   }
 
