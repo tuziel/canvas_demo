@@ -72,77 +72,39 @@ export default class Ball {
    * 设置速度
    *
    * @param speed 速度
+   * @param onlySpeed 不设置速度分量
    */
-  public setSpeed(speed: number): void {
+  public setSpeed(speed: number, onlySpeed?: boolean): void {
     this.speed = speed;
+    if (!onlySpeed) {
+      this.speedX = speed * Math.cos(this.arc);
+      this.speedY = speed * Math.sin(this.arc);
+    }
+  }
+
+  /**
+   * 设置速度分量
+   *
+   * @param speedX 速度 X 分量
+   * @param speedY 速度 Y 分量
+   */
+  public setDecomposition(speedX: number, speedY: number): void {
+    this.speedX = speedX;
+    this.speedY = speedY;
   }
 
   /**
    * 设置运动方向
    *
    * @param arc 弧度
+   * @param onlyArc 不设置速度分量
    */
-  public setArc(arc: number): void {
+  public setArc(arc: number, onlyArc?: boolean): void {
     this.arc = arc;
-    this.speedX = Math.cos(this.arc);
-    this.speedY = Math.sin(this.arc);
+    if (!onlyArc) {
+      const speed = this.speed;
+      this.speedX = speed * Math.cos(this.arc);
+      this.speedY = speed * Math.sin(this.arc);
+    }
   }
-
-  /**
-   * 撞击
-   *
-   * @param target 撞击目标
-   */
-  // public collideBall(target: Ball): void {
-  //   const dx = target.x - this.x;
-  //   const dy = target.y - this.y;
-
-  //   const collisionAngle = Math.atan2(dy, dx);
-
-  //   const speed = this.speed;
-  //   const speedT = target.speed;
-
-  //   const arc = this.arc;
-  //   const arcT = target.arc;
-
-  //   const vx11 = speed * Math.cos(arc - collisionAngle);
-  //   const vy11 = speed * Math.sin(arc - collisionAngle);
-  //   const vx21 = speedT * Math.cos(arcT - collisionAngle);
-  //   const vy21 = speedT * Math.sin(arcT - collisionAngle);
-
-  //   const mass = this.mass;
-  //   const massT = target.mass;
-
-  //   const vx12 = ((mass - massT) * vx11 + (massT + massT) * vx21) / (mass + massT);
-  //   const vx22 = ((mass + mass) * vx11 + (massT - mass) * vx21) / (mass + massT);
-
-  //   const vy12 = vy11;
-  //   const vy22 = vy21;
-
-  //   const vx1 = Math.cos(collisionAngle) * vx12 + Math.cos(collisionAngle + Math.PI / 2) * vy12;
-  //   const vy1 = Math.sin(collisionAngle) * vx12 + Math.sin(collisionAngle + Math.PI / 2) * vy12;
-  //   const vx2 = Math.cos(collisionAngle) * vx22 + Math.cos(collisionAngle + Math.PI / 2) * vy22;
-  //   const vy2 = Math.sin(collisionAngle) * vx22 + Math.sin(collisionAngle + Math.PI / 2) * vy22;
-
-  //   const cos = Math.cos;
-  //   const sin = Math.sin;
-  //   const sqrt = Math.sqrt;
-  //   const acos = Math.acos;
-  //   const atan = Math.atan;
-  //   const PI = Math.PI;
-
-  //   function sumPolarVectory2(l1, r1, l2, r2) {
-  //     const d = r2 - r1;
-  //     const lx2 = l2 * cos(d);
-  //     const ly2 = l2 * sin(d);
-
-  //     const lxs = l1 + lx2;
-  //     const ls = sqrt(lxs * lxs + ly2 * ly2);
-
-  //     const t = atan(ly2 / lxs);
-  //     const rs = lxs >= 0 ? r1 + t : PI - r1 - t;
-
-  //     return [ls, rs];
-  //   }
-  // }
 }
