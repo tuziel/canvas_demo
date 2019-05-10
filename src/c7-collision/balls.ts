@@ -11,6 +11,10 @@ export default class Ball {
   protected arc: number = 0;
   /** 运动速度 */
   protected speed: number = 1;
+  /** X 方向运动速度 */
+  protected speedX: number = 1;
+  /** Y 方向运动速度 */
+  protected speedY: number = 0;
   /** 质量 */
   protected mass: number = 1;
 
@@ -55,12 +59,12 @@ export default class Ball {
   /**
    * 获取下一个位置
    *
-   * @param speed 速度
+   * @param ticks 经过的 tick 数
    */
-  public getNextPosition(speed: number): { x: number, y: number } {
+  public getNextPosition(ticks: number = 1): { x: number, y: number } {
     return {
-      x: this.x + Math.cos(this.arc) * speed,
-      y: this.y + Math.sin(this.arc) * speed,
+      x: this.x + this.speedX * ticks,
+      y: this.y + this.speedY * ticks,
     };
   }
 
@@ -80,6 +84,8 @@ export default class Ball {
    */
   public setArc(arc: number): void {
     this.arc = arc;
+    this.speedX = Math.cos(this.arc);
+    this.speedY = Math.sin(this.arc);
   }
 
   /**
@@ -117,5 +123,26 @@ export default class Ball {
   //   const vy1 = Math.sin(collisionAngle) * vx12 + Math.sin(collisionAngle + Math.PI / 2) * vy12;
   //   const vx2 = Math.cos(collisionAngle) * vx22 + Math.cos(collisionAngle + Math.PI / 2) * vy22;
   //   const vy2 = Math.sin(collisionAngle) * vx22 + Math.sin(collisionAngle + Math.PI / 2) * vy22;
+
+  //   const cos = Math.cos;
+  //   const sin = Math.sin;
+  //   const sqrt = Math.sqrt;
+  //   const acos = Math.acos;
+  //   const atan = Math.atan;
+  //   const PI = Math.PI;
+
+  //   function sumPolarVectory2(l1, r1, l2, r2) {
+  //     const d = r2 - r1;
+  //     const lx2 = l2 * cos(d);
+  //     const ly2 = l2 * sin(d);
+
+  //     const lxs = l1 + lx2;
+  //     const ls = sqrt(lxs * lxs + ly2 * ly2);
+
+  //     const t = atan(ly2 / lxs);
+  //     const rs = lxs >= 0 ? r1 + t : PI - r1 - t;
+
+  //     return [ls, rs];
+  //   }
   // }
 }
