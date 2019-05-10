@@ -28,7 +28,7 @@ window.addEventListener('load', (): void => {
     const ball = new Ball(5 + random() * 10 >>> 0);
     ball.setPosition(random() * appWidth >>> 0, random() * appHeight >>> 0);
     ball.setArc(random() * PI2);
-    ball.setSpeed(0.1 + random() * 1.4);
+    ball.setSpeed((1 + random() * 14 >>> 0) / 10);
     ballList.push(ball);
   }
 

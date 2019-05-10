@@ -72,14 +72,21 @@ export default class Ball {
    * 设置速度
    *
    * @param speed 速度
-   * @param onlySpeed 不设置速度分量
    */
-  public setSpeed(speed: number, onlySpeed?: boolean): void {
+  public setSpeed(speed: number): void {
     this.speed = speed;
-    if (!onlySpeed) {
-      this.speedX = speed * Math.cos(this.arc);
-      this.speedY = speed * Math.sin(this.arc);
-    }
+    // 修正速度分量
+    this.speedX = speed * Math.cos(this.arc);
+    this.speedY = speed * Math.sin(this.arc);
+  }
+
+  /**
+   * 设置速度
+   *
+   * @param speed 速度
+   */
+  public setSpeedOnly(speed: number): void {
+    this.speed = speed;
   }
 
   /**
@@ -91,20 +98,43 @@ export default class Ball {
   public setDecomposition(speedX: number, speedY: number): void {
     this.speedX = speedX;
     this.speedY = speedY;
+    // 修正总速度
+    const speed = this.speed = Math.sqrt(speedX * speedX + speedY * speedY);
+    // 修正角度
+    this.arc = speedY >= 0 ? Math.acos(speedX / speed) : PI2 - Math.acos(speedX / speed);
+  }
+
+  /**
+   * 设置速度分量
+   *
+   * @param speedX 速度 X 分量
+   * @param speedY 速度 Y 分量
+   */
+  public setDecompositionOnly(speedX: number, speedY: number): void {
+    this.speedX = speedX;
+    this.speedY = speedY;
   }
 
   /**
    * 设置运动方向
    *
    * @param arc 弧度
-   * @param onlyArc 不设置速度分量
    */
-  public setArc(arc: number, onlyArc?: boolean): void {
+  public setArc(arc: number): void {
     this.arc = arc;
-    if (!onlyArc) {
-      const speed = this.speed;
-      this.speedX = speed * Math.cos(this.arc);
-      this.speedY = speed * Math.sin(this.arc);
-    }
+    // 修正总速度
+    const speed = this.speed;
+    // 修正速度分量
+    this.speedX = speed * Math.cos(this.arc);
+    this.speedY = speed * Math.sin(this.arc);
+  }
+
+  /**
+   * 设置运动方向
+   *
+   * @param arc 弧度
+   */
+  public setArcOnly(arc: number): void {
+    this.arc = arc;
   }
 }
