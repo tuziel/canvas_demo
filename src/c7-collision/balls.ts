@@ -26,7 +26,7 @@ export default class Ball {
    * 更新
    */
   public update(): void {
-    const pos = this.getNextPosition(this.speed);
+    const pos = this.getNextPosition(1);
     this.x = pos.x;
     this.y = pos.y;
   }
@@ -37,7 +37,7 @@ export default class Ball {
    * @param renderer
    */
   public render(context: CanvasRenderingContext2D, detla: number): void {
-    const pos = this.getNextPosition(this.speed * detla);
+    const pos = this.getNextPosition(detla);
     context.beginPath();
     context.arc(pos.x, pos.y, this.radius, 0, PI2, true);
     context.closePath();
@@ -61,7 +61,7 @@ export default class Ball {
    *
    * @param ticks 经过的 tick 数
    */
-  public getNextPosition(ticks: number = 1): { x: number, y: number } {
+  public getNextPosition(ticks: number): { x: number, y: number } {
     return {
       x: this.x + this.speedX * ticks,
       y: this.y + this.speedY * ticks,
