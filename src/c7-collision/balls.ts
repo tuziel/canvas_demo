@@ -1,4 +1,11 @@
-const PI2 = Math.PI * 2;
+const cos = Math.cos;
+const sin = Math.sin;
+// const acos = Math.acos;
+const sqrt = Math.sqrt;
+const atan2 = Math.atan2;
+const PI = Math.PI;
+// const PI1_2 = PI / 2;
+const PI2 = PI * 2;
 
 export default class Ball {
   /** 半径 */
@@ -76,8 +83,8 @@ export default class Ball {
   public setSpeed(speed: number): void {
     this.speed = speed;
     // 修正速度分量
-    this.speedX = speed * Math.cos(this.arc);
-    this.speedY = speed * Math.sin(this.arc);
+    this.speedX = speed * cos(this.arc);
+    this.speedY = speed * sin(this.arc);
   }
 
   /**
@@ -99,9 +106,9 @@ export default class Ball {
     this.speedX = speedX;
     this.speedY = speedY;
     // 修正总速度
-    const speed = this.speed = Math.sqrt(speedX * speedX + speedY * speedY);
+    this.speed = sqrt(speedX * speedX + speedY * speedY);
     // 修正角度
-    this.arc = speedY >= 0 ? Math.acos(speedX / speed) : PI2 - Math.acos(speedX / speed);
+    this.arc = atan2(speedY, speedX);
   }
 
   /**
@@ -122,11 +129,9 @@ export default class Ball {
    */
   public setArc(arc: number): void {
     this.arc = arc;
-    // 修正总速度
-    const speed = this.speed;
     // 修正速度分量
-    this.speedX = speed * Math.cos(this.arc);
-    this.speedY = speed * Math.sin(this.arc);
+    this.speedX = this.speed * cos(this.arc);
+    this.speedY = this.speed * sin(this.arc);
   }
 
   /**
@@ -136,5 +141,41 @@ export default class Ball {
    */
   public setArcOnly(arc: number): void {
     this.arc = arc;
+  }
+
+  /**
+   * 撞击
+   *
+   * @param target 撞击目标
+   */
+  public collideBall(target: Ball): void {
+    /** 质量 */
+    const m1 = this.mass;
+    /** 目标质量 */
+    const m2 = target.mass;
+    /** 相对 X 坐标 */
+    const dx = target.x - this.x;
+    /** 相对 Y 坐标 */
+    const dy = target.y - this.y;
+    /** 碰撞角 */
+    const aC = atan2(dy, dx);
+
+    // 计算沿碰撞角的速度分量
+    const cosC = cos(aC);
+    const sinC = sin(aC);
+    const vv11 = this.speedY * cosC + this.speedY * sinC;
+    const vh1 = this.speedY * cosC - this.speedY * sinC;
+    const vv21 = target.speedY * cosC + target.speedY * sinC;
+    const vh2 = target.speedY * cosC - target.speedY * sinC;
+
+    // 计算碰撞后的速度
+    const mSum = m1 + m2;
+    const mDiff = m1 - m2;
+    const vv12 = ((m2 + m2) * vv21 + mDiff * vv11) / mSum;
+    const vv22 = ((m1 + m1) * vv11 - mDiff * vv21) / mSum;
+
+    // 修正各参数
+    this.setDecomposition(cosC * vv12 - sinC * vh1, cosC * vh1 + sinC * vv12);
+    target.setDecomposition(cosC * vv22 - sinC * vh2, cosC * vh2 + sinC * vv22);
   }
 }
