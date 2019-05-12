@@ -1,13 +1,11 @@
 const cos = Math.cos;
 const sin = Math.sin;
-// const acos = Math.acos;
 const sqrt = Math.sqrt;
 const atan2 = Math.atan2;
 const PI = Math.PI;
-// const PI1_2 = PI / 2;
 const PI2 = PI * 2;
 
-export default class Ball {
+export default class Ball implements ISportObject2d, ICollideObject2d {
   /** 半径 */
   protected radius: number;
   /** 中心点坐标 X */
@@ -25,6 +23,11 @@ export default class Ball {
   /** 质量 */
   protected mass: number = 1;
 
+  /**
+   * 创建一个球体
+   *
+   * @param radius 半径
+   */
   constructor(radius: number) {
     this.mass = this.radius = radius;
   }
@@ -144,7 +147,32 @@ export default class Ball {
   }
 
   /**
-   * 撞击
+   * 碰撞检测
+   *
+   * @param target 测试的目标
+   */
+  public test(target: IObject2d): boolean {
+    if (target instanceof Ball) {
+      return this.testBall(target);
+    }
+    return false;
+  }
+
+  /**
+   * 对球体的碰撞检测
+   *
+   * @param target 目标
+   */
+  public testBall(target: Ball): boolean {
+    const distanceX = target.y - this.x;
+    const distanceY = target.y - this.x;
+    const distanceMin = this.radius + target.radius;
+
+    return distanceX * distanceX + distanceY * distanceY <= distanceMin * distanceMin;
+  }
+
+  /**
+   * 撞击球
    *
    * @param target 撞击目标
    */
@@ -152,7 +180,7 @@ export default class Ball {
     // 诱导公式万岁!
     // vx = speed * cos(arc - detla)
     //    = speed * cos(arc) * cos(detla) + speed * sin(arc) * sin(detla)
-    //    = vx * cos(detla) + vy * sin(detla)
+    //    = speedX * cos(detla) + speedY * sin(detla)
 
     /** 质量 */
     const m1 = this.mass;
