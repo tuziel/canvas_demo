@@ -1,5 +1,6 @@
 import '../lib/polyfill/requestAnimationFrame';
 import Loop from '../lib/game/loop';
+import Wall from './wall';
 import Ball from './balls';
 
 window.addEventListener('load', (): void => {
@@ -22,6 +23,12 @@ window.addEventListener('load', (): void => {
 
   /** 存放所有物件的列表 */
   const ballList: Ball[] = [];
+  const wallList = [
+    new Wall(5.5, 5.5, appWidth - 11, 0),
+    new Wall(5.5, 5.5, 0, appHeight - 11),
+    new Wall(appWidth - 5.5, 5.5, 0, appHeight - 11),
+    new Wall(5.5, appHeight - 5.5, appWidth - 11, 0),
+  ];
 
   let count = 20;
   while (count--) {
@@ -39,10 +46,6 @@ window.addEventListener('load', (): void => {
     // 背景
     context.fillStyle = '#ffffaa';
     context.fillRect(0, 0, appWidth, appHeight);
-
-    // 边框
-    context.strokeStyle = '#000000';
-    context.strokeRect(5, 5, appWidth - 10, appHeight - 10);
   }
 
   /**
@@ -69,6 +72,10 @@ window.addEventListener('load', (): void => {
     let length = ballList.length;
     while (length--) {
       ballList[length].render(context, detla);
+    }
+    length = wallList.length;
+    while (length--) {
+      wallList[length].render(context);
     }
   }
 
