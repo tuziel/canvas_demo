@@ -158,20 +158,16 @@ export default class Ball {
     const m1 = this.mass;
     /** 目标质量 */
     const m2 = target.mass;
-    /** 相对 X 坐标 */
-    const dx = target.x - this.x;
-    /** 相对 Y 坐标 */
-    const dy = target.y - this.y;
     /** 碰撞角 */
-    const aC = atan2(dy, dx);
+    const theta = atan2(target.y - this.y, target.x - this.x);
 
     // 计算沿碰撞角的速度分量
-    const cosC = cos(aC);
-    const sinC = sin(aC);
-    const vv11 = this.speedX * cosC + this.speedY * sinC;
-    const vh1 = this.speedY * cosC - this.speedX * sinC;
-    const vv21 = target.speedX * cosC + target.speedY * sinC;
-    const vh2 = target.speedY * cosC - target.speedX * sinC;
+    const cosT = cos(theta);
+    const sinT = sin(theta);
+    const vv11 = this.speedX * cosT + this.speedY * sinT;
+    const vh1 = this.speedY * cosT - this.speedX * sinT;
+    const vv21 = target.speedX * cosT + target.speedY * sinT;
+    const vh2 = target.speedY * cosT - target.speedX * sinT;
 
     // 计算碰撞后的速度
     const mSum = m1 + m2;
@@ -180,7 +176,7 @@ export default class Ball {
     const vv22 = ((m1 + m1) * vv11 - mDiff * vv21) / mSum;
 
     // 修正各参数
-    this.setDecomposition(cosC * vv12 - sinC * vh1, cosC * vh1 + sinC * vv12);
-    target.setDecomposition(cosC * vv22 - sinC * vh2, cosC * vh2 + sinC * vv22);
+    this.setDecomposition(vv12 * cosT - vh1 * sinT, vh1 * cosT + vv12 * sinT);
+    target.setDecomposition(vv22 * cosT - vh2 * sinT, vh2 * cosT + vv22 * sinT);
   }
 }
