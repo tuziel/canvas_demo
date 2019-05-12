@@ -149,6 +149,11 @@ export default class Ball {
    * @param target 撞击目标
    */
   public collideBall(target: Ball): void {
+    // 诱导公式万岁!
+    // vx = speed * cos(arc - detla)
+    //    = speed * cos(arc) * cos(detla) + speed * sin(arc) * sin(detla)
+    //    = vx * cos(detla) + vy * sin(detla)
+
     /** 质量 */
     const m1 = this.mass;
     /** 目标质量 */
@@ -163,10 +168,10 @@ export default class Ball {
     // 计算沿碰撞角的速度分量
     const cosC = cos(aC);
     const sinC = sin(aC);
-    const vv11 = this.speedY * cosC + this.speedY * sinC;
-    const vh1 = this.speedY * cosC - this.speedY * sinC;
-    const vv21 = target.speedY * cosC + target.speedY * sinC;
-    const vh2 = target.speedY * cosC - target.speedY * sinC;
+    const vv11 = this.speedX * cosC + this.speedY * sinC;
+    const vh1 = this.speedY * cosC - this.speedX * sinC;
+    const vv21 = target.speedX * cosC + target.speedY * sinC;
+    const vh2 = target.speedY * cosC - target.speedX * sinC;
 
     // 计算碰撞后的速度
     const mSum = m1 + m2;
