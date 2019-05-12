@@ -164,8 +164,8 @@ export default class Ball implements ISportObject2d, ICollideObject2d {
    * @param target 目标
    */
   public testBall(target: Ball): boolean {
-    const distanceX = target.y - this.x;
-    const distanceY = target.y - this.x;
+    const distanceX = target.x - this.x;
+    const distanceY = target.y - this.y;
     const distanceMin = this.radius + target.radius;
 
     return distanceX * distanceX + distanceY * distanceY <= distanceMin * distanceMin;
