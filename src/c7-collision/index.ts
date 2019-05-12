@@ -23,7 +23,7 @@ window.addEventListener('load', (): void => {
   /** 存放所有物件的列表 */
   const ballList: Ball[] = [];
 
-  let count = 10;
+  let count = 20;
   while (count--) {
     const ball = new Ball(5 + random() * 10 >>> 0);
     ball.setPosition(random() * appWidth >>> 0, random() * appHeight >>> 0);
@@ -51,7 +51,13 @@ window.addEventListener('load', (): void => {
   function updater(): void {
     let length = ballList.length;
     while (length--) {
-      ballList[length].update();
+      const ball = ballList[length];
+      ball.update();
+      let i = length;
+      while (i--) {
+        ball.test(ballList[i]) &&
+          ball.collideBall(ballList[i]);
+      }
     }
   }
 
