@@ -5,16 +5,10 @@ export default class Wall implements ICollideObject2d {
   protected x: number;
   /** 起点的 Y 坐标 */
   protected y: number;
-  /** 中点的 X 坐标 */
-  protected centerX: number;
-  /** 中点的 Y 坐标 */
-  protected centerY: number;
   /** 宽度 */
   protected width: number;
-  protected halfWidth: number;
   /** 高度 */
   protected height: number;
-  protected halfHeight: number;
   /** 旋转角度（暂时不管啦） */
   // protected rotate: number = 0;
   /** 填充样式 */
@@ -33,10 +27,6 @@ export default class Wall implements ICollideObject2d {
     this.y = y;
     this.width = width;
     this.height = height;
-    const halfWidth = this.halfWidth = width / 2;
-    const halfHeight = this.halfHeight = height / 2;
-    this.centerX = x + halfWidth;
-    this.centerY = y + halfHeight;
   }
 
   /**
@@ -46,7 +36,7 @@ export default class Wall implements ICollideObject2d {
    */
   public render(context: CanvasRenderingContext2D): void {
     context.fillStyle = this.fillStyle;
-    context.strokeRect(this.x, this.y, this.width, this.height);
+    context.fillRect(this.x, this.y, this.width, this.height);
   }
 
   /**
@@ -56,12 +46,8 @@ export default class Wall implements ICollideObject2d {
    * @param y 起点的 Y 坐标
    */
   public setPosition(x: number, y: number) {
-    const detlaX = x - this.x;
-    const detlaY = y - this.y;
     this.x = x;
     this.y = y;
-    this.centerX += detlaX;
-    this.centerY += detlaY;
   }
 
   /**
@@ -84,8 +70,6 @@ export default class Wall implements ICollideObject2d {
   public setSize(width: number, height: number) {
     this.width = width;
     this.height = height;
-    this.centerX = this.x + width / 2;
-    this.centerY = this.y + height / 2;
   }
 
   /**
@@ -99,17 +83,12 @@ export default class Wall implements ICollideObject2d {
     this.height = height;
   }
 
-  public getCollideData(): {
-    centerX: number,
-    centerY: number,
-    halfWidth: number,
-    halfHeight: number,
-  } {
+  public getCollideData() {
     return {
-      centerX: this.centerX,
-      centerY: this.centerY,
-      halfWidth: this.halfWidth,
-      halfHeight: this.halfHeight,
+      x: this.x,
+      y: this.y,
+      width: this.width,
+      height: this.height,
     };
   }
 

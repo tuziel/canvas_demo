@@ -181,9 +181,11 @@ export default class Ball implements ISportObject2d, ICollideObject2d {
    */
   public testWall(target: Wall): boolean {
     const wall = target.getCollideData();
-    const isCrossX = Math.abs(wall.centerX - this.x) <= wall.halfWidth + this.radius;
-    const isCrossY = Math.abs(wall.centerY - this.y) <= wall.halfHeight + this.radius;
-    return isCrossX && isCrossY;
+    const relativeX = this.x > wall.x ? Math.max(this.x - wall.width, wall.x) : this.x;
+    const relativey = this.y > wall.y ? Math.max(this.y - wall.height, wall.y) : this.y;
+    const distanceX = wall.x - relativeX;
+    const distanceY = wall.y - relativey;
+    return distanceX * distanceX + distanceY * distanceY <= this.radius * this.radius;
   }
 
   /**
@@ -241,6 +243,6 @@ export default class Ball implements ISportObject2d, ICollideObject2d {
    * @param target 目标
    */
   public collideWall(_target: Wall): void {
-    //
+    console.log('rua!');
   }
 }
