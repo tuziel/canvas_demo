@@ -6,7 +6,7 @@ const sqrt = Math.sqrt;
 const atan2 = Math.atan2;
 const PI2 = Math.PI * 2;
 
-export default class Ball implements ISportObject2d, ICollideObject2d {
+export default class Ball implements ICollideObject2d {
   /** 半径 */
   protected radius: number;
   /** 中心点坐标 X */

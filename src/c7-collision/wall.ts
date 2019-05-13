@@ -29,6 +29,8 @@ export default class Wall implements ICollideObject2d {
     this.height = height;
   }
 
+  public update() { /* nop*/ }
+
   /**
    * 渲染
    *
