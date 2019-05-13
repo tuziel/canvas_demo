@@ -1,3 +1,4 @@
+import '../style.css';
 import '../lib/polyfill/requestAnimationFrame';
 import Loop from '../lib/game/loop';
 import Wall from './wall';
