@@ -1,5 +1,6 @@
 import Wall from './wall';
 
+const max = Math.max;
 const cos = Math.cos;
 const sin = Math.sin;
 const sqrt = Math.sqrt;
@@ -184,21 +185,21 @@ export default class Ball implements ICollideObject2d {
    */
   public testWall(target: Wall): boolean {
     const wall = target.getCollideData();
-    const distanceX = this.x - wall.x;
-    const distanceY = this.y - wall.y;
-    const distanceXSqua = distanceX * distanceX;
-    const distanceYSqua = distanceY * distanceY;
-    const distanceSqua = distanceXSqua + distanceYSqua;
-    const distanceMin = this.radius + wall.radius;
-
-    // 如果与矩形外接圆重叠再进行下一步检测
-    if (distanceSqua <= distanceMin * distanceMin) {
-      const distance = sqrt(distanceSqua);
+    // 如果与AABB盒重叠再进行下一步检测
+    if (
+      this.y >= wall.outerTop - this.radius &&
+      this.x <= wall.outerRight + this.radius &&
+      this.y <= wall.outerBottom + this.radius &&
+      this.x >= wall.outerLeft - this.radius
+    ) {
+      const distanceX = this.x - wall.x;
+      const distanceY = this.y - wall.y;
+      const distance = sqrt(distanceX * distanceX + distanceY * distanceY);
       const theta = atan2(distanceY, distanceX) - wall.rotate;
       const thetaX = distance * cos(theta);
       const thetaY = distance * sin(theta);
-      const relativeX = thetaX > 0 ? Math.max(0, thetaX - wall.width) : thetaX;
-      const relativey = thetaY > 0 ? Math.max(0, thetaY - wall.height) : thetaY;
+      const relativeX = thetaX > 0 ? max(0, thetaX - wall.width) : thetaX;
+      const relativey = thetaY > 0 ? max(0, thetaY - wall.height) : thetaY;
       return relativeX * relativeX + relativey * relativey <= this.radiusSqua;
     }
 

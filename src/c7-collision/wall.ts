@@ -1,5 +1,10 @@
 import Ball from './balls';
 
+const min = Math.min;
+const max = Math.max;
+const cos = Math.cos;
+const sin = Math.sin;
+
 export default class Wall implements ICollideObject2d {
   /** 起点的 X 坐标 */
   protected x: number;
@@ -9,10 +14,14 @@ export default class Wall implements ICollideObject2d {
   protected width: number;
   /** 高度 */
   protected height: number;
-  /** 外接圆直径 */
-  protected radius: number;
-  /** 外接圆直径的平方 */
-  protected radiusSqua: number;
+  /** 最高点 */
+  protected outerTop: number = 0;
+  /** 最右点 */
+  protected outerRight: number = 0;
+  /** 最低点 */
+  protected outerBottom: number = 0;
+  /** 最左点 */
+  protected outerLeft: number = 0;
   /** 旋转角度 */
   protected rotate: number = 0;
   /** 填充样式 */
@@ -31,8 +40,7 @@ export default class Wall implements ICollideObject2d {
     this.y = y;
     this.width = width;
     this.height = height;
-    this.radiusSqua = width * width + height * height;
-    this.radius = Math.sqrt(this.radiusSqua);
+    this.resetOuter();
   }
 
   public update() { /* nop*/ }
@@ -47,7 +55,14 @@ export default class Wall implements ICollideObject2d {
     context.translate(this.x, this.y);
     context.rotate(this.rotate);
     context.fillRect(0, 0, this.width, this.height);
-    context.resetTransform();
+    context.setTransform(1, 0, 0, 1, 0, 0);
+    context.strokeStyle = '#ff0000';
+    context.strokeRect(
+      this.outerLeft,
+      this.outerTop,
+      this.outerRight - this.outerLeft,
+      this.outerBottom - this.outerTop,
+    );
   }
 
   /**
@@ -59,6 +74,7 @@ export default class Wall implements ICollideObject2d {
   public setPosition(x: number, y: number): void {
     this.x = x;
     this.y = y;
+    this.resetOuter();
   }
 
   /**
@@ -70,8 +86,7 @@ export default class Wall implements ICollideObject2d {
   public setSize(width: number, height: number): void {
     this.width = width;
     this.height = height;
-    this.radiusSqua = width * width + height * height;
-    this.radius = Math.sqrt(this.radiusSqua);
+    this.resetOuter();
   }
 
   /**
@@ -85,8 +100,14 @@ export default class Wall implements ICollideObject2d {
     this.height = height;
   }
 
+  /**
+   * 设置旋转角度
+   *
+   * @param rotate 旋转角
+   */
   public setRotate(rotate: number): void {
     this.rotate = rotate;
+    this.resetOuter();
   }
 
   public getCollideData() {
@@ -99,12 +120,16 @@ export default class Wall implements ICollideObject2d {
       width: this.width,
       /** 高度 */
       height: this.height,
-      /** 外接圆直径 */
-      radius: this.radius,
-      /** 外接圆直径的平方 */
-      radiusSqua: this.radiusSqua,
       /** 旋转角度 */
       rotate: this.rotate,
+      /** 最高点 */
+      outerTop: this.outerTop,
+      /** 最右点 */
+      outerRight: this.outerRight,
+      /** 最低点 */
+      outerBottom: this.outerBottom,
+      /** 最左点 */
+      outerLeft: this.outerLeft,
     };
   }
 
@@ -129,5 +154,20 @@ export default class Wall implements ICollideObject2d {
     if (target instanceof Ball) {
       target.collideWall(this);
     }
+  }
+
+  protected resetOuter() {
+    const cosTheta = cos(this.rotate);
+    const sinTheta = sin(this.rotate);
+    const relativeBX = this.width * cosTheta;
+    const relativeBY = this.width * sinTheta;
+    const relativeDX = -(this.height * sinTheta);
+    const relativeDY = this.height * cosTheta;
+    const relativeCX = relativeBX + relativeDX;
+    const relativeCY = relativeBY + relativeDY;
+    this.outerTop = this.y + min(0, min(relativeBY, min(relativeCY, min(relativeDY))));
+    this.outerRight = this.x + max(0, max(relativeBX, max(relativeCX, max(relativeDX))));
+    this.outerBottom = this.y + max(0, max(relativeBY, max(relativeCY, max(relativeDY))));
+    this.outerLeft = this.x + min(0, min(relativeBX, min(relativeCX, min(relativeDX))));
   }
 }
