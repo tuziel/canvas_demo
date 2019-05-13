@@ -103,7 +103,10 @@ export default class Wall implements ICollideObject2d {
     this.resetOuter();
   }
 
-  public getCollideData() {
+  /**
+   * 获取用于计算碰撞的数据
+   */
+  public getCollideData(): { [x: string]: number } {
     return {
       /** 起点的 X 坐标 */
       x: this.x,
@@ -149,7 +152,10 @@ export default class Wall implements ICollideObject2d {
     }
   }
 
-  protected resetOuter() {
+  /**
+   * 重置AABB盒
+   */
+  protected resetOuter(): void {
     const cosTheta = cos(this.rotate);
     const sinTheta = sin(this.rotate);
     const relativeBX = this.width * cosTheta;
