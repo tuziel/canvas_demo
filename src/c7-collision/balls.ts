@@ -1,9 +1,10 @@
+import Wall from './wall';
+
 const cos = Math.cos;
 const sin = Math.sin;
 const sqrt = Math.sqrt;
 const atan2 = Math.atan2;
-const PI = Math.PI;
-const PI2 = PI * 2;
+const PI2 = Math.PI * 2;
 
 export default class Ball implements ISportObject2d, ICollideObject2d {
   /** 半径 */
@@ -154,6 +155,8 @@ export default class Ball implements ISportObject2d, ICollideObject2d {
   public test(target: IObject2d): boolean {
     if (target instanceof Ball) {
       return this.testBall(target);
+    } else if (target instanceof Wall) {
+      return this.testWall(target);
     }
     return false;
   }
@@ -172,12 +175,36 @@ export default class Ball implements ISportObject2d, ICollideObject2d {
   }
 
   /**
+   * 对墙的碰撞检测
+   *
+   * @param target 目标
+   */
+  public testWall(target: Wall): boolean {
+    const wall = target.getCollideData();
+    const isCrossX = Math.abs(wall.centerX - this.x) <= wall.halfWidth + this.radius;
+    const isCrossY = Math.abs(wall.centerY - this.y) <= wall.halfHeight + this.radius;
+    return isCrossX && isCrossY;
+  }
+
+  /**
+   * 撞击
+   *
+   * @param target 撞击目标
+   */
+  public collide(target: IObject2d): void {
+    if (target instanceof Ball) {
+      this.collideBall(target);
+    } else if (target instanceof Wall) {
+      this.collideWall(target);
+    }
+  }
+
+  /**
    * 撞击球
    *
    * @param target 撞击目标
    */
   public collideBall(target: Ball): void {
-    // 诱导公式万岁!
     // vx = speed * cos(arc - detla)
     //    = speed * cos(arc) * cos(detla) + speed * sin(arc) * sin(detla)
     //    = speedX * cos(detla) + speedY * sin(detla)
@@ -206,5 +233,14 @@ export default class Ball implements ISportObject2d, ICollideObject2d {
     // 修正各参数
     this.setDecomposition(vv12 * cosT - vh1 * sinT, vh1 * cosT + vv12 * sinT);
     target.setDecomposition(vv22 * cosT - vh2 * sinT, vh2 * cosT + vv22 * sinT);
+  }
+
+  /**
+   * 撞击墙
+   *
+   * @param target 目标
+   */
+  public collideWall(_target: Wall): void {
+    //
   }
 }
