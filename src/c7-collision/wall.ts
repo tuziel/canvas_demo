@@ -56,13 +56,6 @@ export default class Wall implements ICollideObject2d {
     context.rotate(this.rotate);
     context.fillRect(0, 0, this.width, this.height);
     context.setTransform(1, 0, 0, 1, 0, 0);
-    context.strokeStyle = '#ff0000';
-    context.strokeRect(
-      this.outerLeft,
-      this.outerTop,
-      this.outerRight - this.outerLeft,
-      this.outerBottom - this.outerTop,
-    );
   }
 
   /**
