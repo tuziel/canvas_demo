@@ -9,7 +9,5 @@ interface IObject2d {
 /** 碰撞物件 */
 interface ICollideObject2d extends IObject2d {
   /** 碰撞检测 */
-  test(target: ICollideObject2d): boolean;
-  /** 触发碰撞 */
-  collide(target: ICollideObject2d): void;
+  test(target: ICollideObject2d, effect?: boolean): boolean;
 }

@@ -5,7 +5,8 @@ const cos = Math.cos;
 const sin = Math.sin;
 const sqrt = Math.sqrt;
 const atan2 = Math.atan2;
-const PI2 = Math.PI * 2;
+const PI = Math.PI;
+const PI2 = PI * 2;
 
 export default class Ball implements ICollideObject2d {
   /** 中心点坐标 X */
@@ -27,6 +28,10 @@ export default class Ball implements ICollideObject2d {
   /** 质量 */
   protected mass: number = 1;
 
+  /** 碰撞记录 */
+  protected record: [ICollideObject2d[], ICollideObject2d[]] = [[], []];
+  protected recordIndex: number = 0;
+
   /**
    * 创建一个球体
    *
@@ -44,6 +49,7 @@ export default class Ball implements ICollideObject2d {
     const pos = this.getNextPosition(1);
     this.x = pos.x;
     this.y = pos.y;
+    this.swapRecord();
   }
 
   /**
@@ -156,11 +162,11 @@ export default class Ball implements ICollideObject2d {
    *
    * @param target 测试的目标
    */
-  public test(target: IObject2d): boolean {
+  public test(target: IObject2d, effect?: boolean): boolean {
     if (target instanceof Ball) {
-      return this.testBall(target);
+      return this.testBall(target, effect);
     } else if (target instanceof Wall) {
-      return this.testWall(target);
+      return this.testWall(target, effect);
     }
     return false;
   }
@@ -170,12 +176,52 @@ export default class Ball implements ICollideObject2d {
    *
    * @param target 目标
    */
-  public testBall(target: Ball): boolean {
+  public testBall(target: Ball, effect?: boolean): boolean {
+    // 计算距离
     const distanceX = target.x - this.x;
     const distanceY = target.y - this.y;
     const distanceMin = this.radius + target.radius;
 
-    return distanceX * distanceX + distanceY * distanceY <= distanceMin * distanceMin;
+    /** 是否发生碰撞 */
+    const isCollided = distanceX * distanceX + distanceY * distanceY <= distanceMin * distanceMin;
+
+    // 触发碰撞效果
+    if (isCollided && effect) {
+      this.setRecord(target);
+      target.setRecord(this);
+
+      if (!this.hasRecord(target) && !target.hasRecord(this)) {
+        /** 质量 */
+        const m1 = this.mass;
+        /** 目标质量 */
+        const m2 = target.mass;
+        /** 碰撞角 */
+        const theta = atan2(distanceY, distanceX);
+        const cosT = cos(theta);
+        const sinT = sin(theta);
+
+        // 计算沿碰撞角的速度分量
+        // vx = speed * cos(arc - detla)
+        //    = speed * cos(arc) * cos(detla) + speed * sin(arc) * sin(detla)
+        //    = speedX * cos(detla) + speedY * sin(detla)
+        const vv11 = this.speedX * cosT + this.speedY * sinT;
+        const vh1 = this.speedY * cosT - this.speedX * sinT;
+        const vv21 = target.speedX * cosT + target.speedY * sinT;
+        const vh2 = target.speedY * cosT - target.speedX * sinT;
+
+        // 计算碰撞后的速度
+        const mSum = m1 + m2;
+        const mDiff = m1 - m2;
+        const vv12 = ((m2 + m2) * vv21 + mDiff * vv11) / mSum;
+        const vv22 = ((m1 + m1) * vv11 - mDiff * vv21) / mSum;
+
+        // 修正各参数
+        this.setDecomposition(vv12 * cosT - vh1 * sinT, vh1 * cosT + vv12 * sinT);
+        target.setDecomposition(vv22 * cosT - vh2 * sinT, vh2 * cosT + vv22 * sinT);
+      }
+    }
+
+    return isCollided;
   }
 
   /**
@@ -183,8 +229,9 @@ export default class Ball implements ICollideObject2d {
    *
    * @param target 目标
    */
-  public testWall(target: Wall): boolean {
+  public testWall(target: Wall, effect?: boolean): boolean {
     const wall = target.getCollideData();
+
     // 如果与AABB盒重叠再进行下一步检测
     if (
       this.y >= wall.outerTop - this.radius &&
@@ -199,68 +246,49 @@ export default class Ball implements ICollideObject2d {
       const thetaX = distance * cos(theta);
       const thetaY = distance * sin(theta);
       const relativeX = thetaX > 0 ? max(0, thetaX - wall.width) : thetaX;
-      const relativey = thetaY > 0 ? max(0, thetaY - wall.height) : thetaY;
-      return relativeX * relativeX + relativey * relativey <= this.radiusSqua;
+      const relativeY = thetaY > 0 ? max(0, thetaY - wall.height) : thetaY;
+      const isCollided = relativeX * relativeX + relativeY * relativeY <= this.radiusSqua;
+
+      // 触发碰撞效果
+      if (isCollided && effect) {
+        this.setRecord(target);
+        target.setRecord(this);
+
+        if (!this.hasRecord(target) && !target.hasRecord(this)) {
+          const detla = atan2(relativeY, relativeX);
+          this.setArc((detla + detla - PI - this.arc - wall.rotate) % PI2);
+        }
+      }
+
+      return isCollided;
     }
 
     return false;
   }
 
   /**
-   * 撞击
+   * 记录碰撞过的物件
    *
-   * @param target 撞击目标
+   * @param object 物件
    */
-  public collide(target: IObject2d): void {
-    if (target instanceof Ball) {
-      this.collideBall(target);
-    } else if (target instanceof Wall) {
-      this.collideWall(target);
-    }
+  public setRecord(object: ICollideObject2d): void {
+    this.record[this.recordIndex].push(object);
   }
 
   /**
-   * 撞击球
+   * 检查是否在上一次更新时碰撞过
    *
-   * @param target 撞击目标
+   * @param object 物件
    */
-  public collideBall(target: Ball): void {
-    // vx = speed * cos(arc - detla)
-    //    = speed * cos(arc) * cos(detla) + speed * sin(arc) * sin(detla)
-    //    = speedX * cos(detla) + speedY * sin(detla)
-
-    /** 质量 */
-    const m1 = this.mass;
-    /** 目标质量 */
-    const m2 = target.mass;
-    /** 碰撞角 */
-    const theta = atan2(target.y - this.y, target.x - this.x);
-    const cosT = cos(theta);
-    const sinT = sin(theta);
-
-    // 计算沿碰撞角的速度分量
-    const vv11 = this.speedX * cosT + this.speedY * sinT;
-    const vh1 = this.speedY * cosT - this.speedX * sinT;
-    const vv21 = target.speedX * cosT + target.speedY * sinT;
-    const vh2 = target.speedY * cosT - target.speedX * sinT;
-
-    // 计算碰撞后的速度
-    const mSum = m1 + m2;
-    const mDiff = m1 - m2;
-    const vv12 = ((m2 + m2) * vv21 + mDiff * vv11) / mSum;
-    const vv22 = ((m1 + m1) * vv11 - mDiff * vv21) / mSum;
-
-    // 修正各参数
-    this.setDecomposition(vv12 * cosT - vh1 * sinT, vh1 * cosT + vv12 * sinT);
-    target.setDecomposition(vv22 * cosT - vh2 * sinT, vh2 * cosT + vv22 * sinT);
+  public hasRecord(object: ICollideObject2d): boolean {
+    return this.record[1 - this.recordIndex].indexOf(object) >= 0;
   }
 
   /**
-   * 撞击墙
-   *
-   * @param target 目标
+   * 交换记录表
    */
-  public collideWall(_target: Wall): void {
-    this.setDecomposition(-this.speedX, -this.speedY);
+  protected swapRecord(): void {
+    this.recordIndex = 1 - this.recordIndex;
+    this.record[this.recordIndex].length = 0;
   }
 }

@@ -27,6 +27,10 @@ export default class Wall implements ICollideObject2d {
   /** 填充样式 */
   protected fillStyle: string | CanvasGradient | CanvasPattern = '#000000';
 
+  /** 碰撞记录 */
+  protected record: [ICollideObject2d[], ICollideObject2d[]] = [[], []];
+  protected recordIndex: number = 0;
+
   /**
    * 创建一面墙
    *
@@ -43,7 +47,9 @@ export default class Wall implements ICollideObject2d {
     this.resetOuter();
   }
 
-  public update(): void { /* nop*/ }
+  public update(): void {
+    this.swapRecord();
+  }
 
   /**
    * 渲染
@@ -134,22 +140,37 @@ export default class Wall implements ICollideObject2d {
    *
    * @param target 测试的目标
    */
-  public test(target: IObject2d): boolean {
+  public test(target: IObject2d, effect?: boolean): boolean {
     if (target instanceof Ball) {
-      return target.testWall(this);
+      return target.testWall(this, effect);
     }
     return false;
   }
 
   /**
-   * 撞击
+   * 记录碰撞过的物件
    *
-   * @param target 撞击目标
+   * @param object 物件
    */
-  public collide(target: IObject2d): void {
-    if (target instanceof Ball) {
-      target.collideWall(this);
-    }
+  public setRecord(object: ICollideObject2d): void {
+    this.record[this.recordIndex].push(object);
+  }
+
+  /**
+   * 检查是否在上一次更新时碰撞过
+   *
+   * @param object 物件
+   */
+  public hasRecord(object: ICollideObject2d): boolean {
+    return this.record[1 - this.recordIndex].indexOf(object) >= 0;
+  }
+
+  /**
+   * 交换记录表
+   */
+  protected swapRecord(): void {
+    this.recordIndex = 1 - this.recordIndex;
+    this.record[this.recordIndex].length = 0;
   }
 
   /**

@@ -25,18 +25,27 @@ window.addEventListener('load', (): void => {
   /** 物件 */
   const objects: ICollideObject2d[] = [];
 
-  /** 生成墙壁 */
-  function createWalls(): void {
+  /** 生成边框 */
+  function createBorder(): void {
     objects.push(
       new Wall(5, 5, appWidth - 10, 1),
       new Wall(5, 5, 1, appHeight - 10),
       new Wall(appWidth - 5, 5, 1, appHeight - 10),
       new Wall(5, appHeight - 5, appWidth - 10, 1),
-      ((ball) => {
-        ball.setRotate(PI * 2 / 3);
-        return ball;
-      })(new Wall(380.5, 180.5, 20, 140)),
     );
+  }
+
+  /** 生成随机墙壁 */
+  function createWalls(count: number): void {
+    while (count--) {
+      const wall = new Wall(0, 0, 20 + random() * 80 >>> 0, 20 + random() * 80 >>> 0);
+      wall.setRotate(random() * PI2);
+
+      do {
+        wall.setPosition(random() * appWidth >>> 0, random() * appHeight >>> 0);
+      } while (!canPutItDown(wall));
+      objects.push(wall);
+    }
   }
 
   /**
@@ -48,7 +57,7 @@ window.addEventListener('load', (): void => {
     while (count--) {
       const ball = new Ball(5 + random() * 10 >>> 0);
       ball.setArc(random() * PI2);
-      ball.setSpeed((1 + random() * 14 >>> 0) / 10);
+      ball.setSpeed((6 + random() * 14 >>> 0) / 10);
 
       do {
         ball.setPosition(random() * appWidth >>> 0, random() * appHeight >>> 0);
@@ -57,11 +66,11 @@ window.addEventListener('load', (): void => {
     }
   }
 
-  /** 检测小球是否有空间被放置 */
-  function canPutItDown(ball: Ball): boolean {
+  /** 检测物件是否有空间被放置 */
+  function canPutItDown(object: ICollideObject2d): boolean {
     let length = objects.length;
     while (length--) {
-      if (ball.test(objects[length])) {
+      if (object.test(objects[length])) {
         return false;
       }
     }
@@ -87,8 +96,7 @@ window.addEventListener('load', (): void => {
       object.update();
       let i = length;
       while (i--) {
-        object.test(objects[i]) &&
-          object.collide(objects[i]);
+        object.test(objects[i], true);
       }
     }
   }
@@ -106,8 +114,18 @@ window.addEventListener('load', (): void => {
 
   (function main(): void {
     // 创建对象
-    createWalls();
-    createBalls(50);
+    createBorder();
+    createWalls(2);
+    createBalls(20);
+    objects.push(((wall) => {
+      wall.setRotate(4);
+      return wall;
+    })(new Wall(360, 300, 140, 140)));
+    objects.push(((ball) => {
+      ball.setSpeed(8);
+      ball.setPosition(40, 200);
+      return ball;
+    })(new Ball(20)));
 
     // 创建主循环
     const gameloop = new Loop();
