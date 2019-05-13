@@ -30,13 +30,26 @@ window.addEventListener('load', (): void => {
     new Wall(5.5, appHeight - 5.5, appWidth - 11, 0),
   ];
 
-  let count = 20;
+  let count = 50;
   while (count--) {
     const ball = new Ball(5 + random() * 10 >>> 0);
-    ball.setPosition(random() * appWidth >>> 0, random() * appHeight >>> 0);
     ball.setArc(random() * PI2);
     ball.setSpeed((1 + random() * 14 >>> 0) / 10);
+
+    do {
+      ball.setPosition(random() * appWidth >>> 0, random() * appHeight >>> 0);
+    } while (!canPutItDown(ball));
     ballList.push(ball);
+  }
+
+  function canPutItDown(ball: Ball): boolean {
+    let length = ballList.length;
+    while (length--) {
+      if (ball.test(ballList[length])) {
+        return false;
+      }
+    }
+    return true;
   }
 
   /**
