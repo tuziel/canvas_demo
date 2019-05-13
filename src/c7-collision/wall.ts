@@ -9,6 +9,8 @@ export default class Wall implements ICollideObject2d {
   protected width: number;
   /** 高度 */
   protected height: number;
+  /** 外接圆半径的平方 */
+  protected radiusSqua: number;
   /** 旋转角度 */
   protected rotate: number = 0;
   /** 填充样式 */
@@ -27,6 +29,7 @@ export default class Wall implements ICollideObject2d {
     this.y = y;
     this.width = width;
     this.height = height;
+    this.radiusSqua = width * width + height * height;
   }
 
   public update() { /* nop*/ }
@@ -56,17 +59,6 @@ export default class Wall implements ICollideObject2d {
   }
 
   /**
-   * 设置起点
-   *
-   * @param x 起点的 X 坐标
-   * @param y 起点的 Y 坐标
-   */
-  public setPositionOnly(x: number, y: number): void {
-    this.x = x;
-    this.y = y;
-  }
-
-  /**
    * 设置大小
    *
    * @param width 宽度
@@ -75,6 +67,7 @@ export default class Wall implements ICollideObject2d {
   public setSize(width: number, height: number): void {
     this.width = width;
     this.height = height;
+    this.radiusSqua = width * width + height * height;
   }
 
   /**
@@ -94,10 +87,17 @@ export default class Wall implements ICollideObject2d {
 
   public getCollideData() {
     return {
+      /** 起点的 X 坐标 */
       x: this.x,
+      /** 起点的 Y 坐标 */
       y: this.y,
+      /** 宽度 */
       width: this.width,
+      /** 高度 */
       height: this.height,
+      /** 外接圆半径的平方 */
+      radiusSqua: this.radiusSqua,
+      /** 旋转角度 */
       rotate: this.rotate,
     };
   }
