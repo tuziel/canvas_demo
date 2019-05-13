@@ -16,14 +16,6 @@ export default class Ball implements ICollideObject2d {
   protected radius: number;
   /** 半径平法 */
   protected radiusSqua: number;
-  /** 最高点 */
-  protected outerTop: number = 0;
-  /** 最右点 */
-  protected outerRight: number = 0;
-  /** 最低点 */
-  protected outerBottom: number = 0;
-  /** 最左点 */
-  protected outerLeft: number = 0;
   /** 运动方向弧度 */
   protected arc: number = 0;
   /** 运动速度 */
@@ -43,7 +35,6 @@ export default class Ball implements ICollideObject2d {
   constructor(radius: number) {
     this.mass = this.radius = radius;
     this.radiusSqua = radius * radius;
-    this.resetOuter();
   }
 
   /**
@@ -53,7 +44,6 @@ export default class Ball implements ICollideObject2d {
     const pos = this.getNextPosition(1);
     this.x = pos.x;
     this.y = pos.y;
-    this.resetOuter();
   }
 
   /**
@@ -79,7 +69,6 @@ export default class Ball implements ICollideObject2d {
   public setPosition(x: number, y: number): void {
     this.x = x;
     this.y = y;
-    this.resetOuter();
   }
 
   /**
@@ -196,13 +185,12 @@ export default class Ball implements ICollideObject2d {
    */
   public testWall(target: Wall): boolean {
     const wall = target.getCollideData();
-
     // 如果与AABB盒重叠再进行下一步检测
     if (
-      this.outerBottom >= wall.outerTop &&
-      this.outerLeft <= wall.outerRight &&
-      this.outerTop <= wall.outerBottom &&
-      this.outerRight >= wall.outerLeft
+      this.y >= wall.outerTop - this.radius &&
+      this.x <= wall.outerRight + this.radius &&
+      this.y <= wall.outerBottom + this.radius &&
+      this.x >= wall.outerLeft - this.radius
     ) {
       const distanceX = this.x - wall.x;
       const distanceY = this.y - wall.y;
@@ -274,14 +262,5 @@ export default class Ball implements ICollideObject2d {
    */
   public collideWall(_target: Wall): void {
     this.setDecomposition(-this.speedX, -this.speedY);
-  }
-  /**
-   * 重置AABB盒
-   */
-  protected resetOuter(): void {
-    this.outerTop = this.y - this.radius;
-    this.outerRight = this.x + this.radius;
-    this.outerBottom = this.y + this.radius;
-    this.outerLeft = this.x - this.radius;
   }
 }
