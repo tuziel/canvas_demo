@@ -22,15 +22,22 @@ window.addEventListener('load', (): void => {
   const PI2 = PI * 2;
   const random = Math.random;
 
-  // 物件
-  const wallList: Wall[] = [
-    new Wall(5.5, 5.5, appWidth - 11, 0),
-    new Wall(5.5, 5.5, 0, appHeight - 11),
-    new Wall(appWidth - 5.5, 5.5, 0, appHeight - 11),
-    new Wall(5.5, appHeight - 5.5, appWidth - 11, 0),
-  ];
-  const ballList: Ball[] = [];
-  const objects: IObject2d[] = [];
+  /** 物件 */
+  const objects: ICollideObject2d[] = [];
+
+  /** 生成墙壁 */
+  function createWalls() {
+    objects.push(
+      new Wall(5, 5, appWidth - 10, 1),
+      new Wall(5, 5, 1, appHeight - 10),
+      new Wall(appWidth - 5, 5, 1, appHeight - 10),
+      new Wall(5, appHeight - 5, appWidth - 10, 1),
+      // ((ball) => {
+      //   ball.setRotate(PI * 2 / 3);
+      //   return ball;
+      // })(new Wall(380.5, 180.5, 20, 140)),
+    );
+  }
 
   /**
    * 生成若干个小球
@@ -46,15 +53,15 @@ window.addEventListener('load', (): void => {
       do {
         ball.setPosition(random() * appWidth >>> 0, random() * appHeight >>> 0);
       } while (!canPutItDown(ball));
-      ballList.push(ball);
+      objects.push(ball);
     }
   }
 
   /** 检测小球是否有空间被放置 */
   function canPutItDown(ball: Ball): boolean {
-    let length = ballList.length;
+    let length = objects.length;
     while (length--) {
-      if (ball.test(ballList[length])) {
+      if (ball.test(objects[length])) {
         return false;
       }
     }
@@ -74,19 +81,14 @@ window.addEventListener('load', (): void => {
    * 更新游戏
    */
   function updater(): void {
-    let length = ballList.length;
+    let length = objects.length;
     while (length--) {
-      const ball = ballList[length];
-      ball.update();
-      let i = wallList.length;
+      const object = objects[length];
+      object.update();
+      let i = length;
       while (i--) {
-        ball.test(wallList[i]) &&
-          ball.collide(wallList[i]);
-      }
-      i = length;
-      while (i--) {
-        ball.test(ballList[i]) &&
-          ball.collide(ballList[i]);
+        object.test(objects[i]) &&
+          object.collide(objects[i]);
       }
     }
   }
@@ -96,20 +98,16 @@ window.addEventListener('load', (): void => {
    */
   function renderer(detla: number): void {
     drawBackground();
-    let length = ballList.length;
+    let length = objects.length;
     while (length--) {
-      ballList[length].render(context, detla);
-    }
-    length = wallList.length;
-    while (length--) {
-      wallList[length].render(context);
+      objects[length].render(context, detla);
     }
   }
 
   (function main() {
-    // 创建小球
+    // 创建对象
+    createWalls();
     createBalls(50);
-    objects.concat(wallList).concat(ballList);
 
     // 创建主循环
     const gameloop = new Loop();
