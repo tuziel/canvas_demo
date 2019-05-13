@@ -55,7 +55,7 @@ window.addEventListener('load', (): void => {
    */
   function createBalls(count: number): void {
     while (count--) {
-      const ball = new Ball(5 + random() * 10 >>> 0);
+      const ball = new Ball(10 + random() * 10 >>> 0);
       ball.setArc(random() * PI2);
       ball.setSpeed((6 + random() * 14 >>> 0) / 10);
 
@@ -115,17 +115,8 @@ window.addEventListener('load', (): void => {
   (function main(): void {
     // 创建对象
     createBorder();
-    createWalls(2);
-    createBalls(20);
-    objects.push(((wall) => {
-      wall.setRotate(4);
-      return wall;
-    })(new Wall(360, 300, 140, 140)));
-    objects.push(((ball) => {
-      ball.setSpeed(8);
-      ball.setPosition(40, 200);
-      return ball;
-    })(new Ball(20)));
+    createWalls(5);
+    createBalls(50);
 
     // 创建主循环
     const gameloop = new Loop();
