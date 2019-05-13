@@ -9,8 +9,8 @@ export default class Wall implements ICollideObject2d {
   protected width: number;
   /** 高度 */
   protected height: number;
-  /** 旋转角度（暂时不管啦） */
-  // protected rotate: number = 0;
+  /** 旋转角度 */
+  protected rotate: number = 0;
   /** 填充样式 */
   protected fillStyle: string | CanvasGradient | CanvasPattern = '#000000';
 
@@ -36,7 +36,10 @@ export default class Wall implements ICollideObject2d {
    */
   public render(context: CanvasRenderingContext2D): void {
     context.fillStyle = this.fillStyle;
-    context.fillRect(this.x, this.y, this.width, this.height);
+    context.translate(this.x, this.y);
+    context.rotate(this.rotate);
+    context.fillRect(0, 0, this.width, this.height);
+    context.resetTransform();
   }
 
   /**
@@ -45,7 +48,7 @@ export default class Wall implements ICollideObject2d {
    * @param x 起点的 X 坐标
    * @param y 起点的 Y 坐标
    */
-  public setPosition(x: number, y: number) {
+  public setPosition(x: number, y: number): void {
     this.x = x;
     this.y = y;
   }
@@ -56,7 +59,7 @@ export default class Wall implements ICollideObject2d {
    * @param x 起点的 X 坐标
    * @param y 起点的 Y 坐标
    */
-  public setPositionOnly(x: number, y: number) {
+  public setPositionOnly(x: number, y: number): void {
     this.x = x;
     this.y = y;
   }
@@ -67,7 +70,7 @@ export default class Wall implements ICollideObject2d {
    * @param width 宽度
    * @param height 高度
    */
-  public setSize(width: number, height: number) {
+  public setSize(width: number, height: number): void {
     this.width = width;
     this.height = height;
   }
@@ -78,9 +81,13 @@ export default class Wall implements ICollideObject2d {
    * @param width 宽度
    * @param height 高度
    */
-  public setSizeOnly(width: number, height: number) {
+  public setSizeOnly(width: number, height: number): void {
     this.width = width;
     this.height = height;
+  }
+
+  public setRotate(rotate: number): void {
+    this.rotate = rotate;
   }
 
   public getCollideData() {
@@ -89,6 +96,7 @@ export default class Wall implements ICollideObject2d {
       y: this.y,
       width: this.width,
       height: this.height,
+      rotate: this.rotate,
     };
   }
 
