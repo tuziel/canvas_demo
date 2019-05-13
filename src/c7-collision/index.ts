@@ -32,10 +32,10 @@ window.addEventListener('load', (): void => {
       new Wall(5, 5, 1, appHeight - 10),
       new Wall(appWidth - 5, 5, 1, appHeight - 10),
       new Wall(5, appHeight - 5, appWidth - 10, 1),
-      // ((ball) => {
-      //   ball.setRotate(PI * 2 / 3);
-      //   return ball;
-      // })(new Wall(380.5, 180.5, 20, 140)),
+      ((ball) => {
+        ball.setRotate(PI * 2 / 3);
+        return ball;
+      })(new Wall(380.5, 180.5, 20, 140)),
     );
   }
 

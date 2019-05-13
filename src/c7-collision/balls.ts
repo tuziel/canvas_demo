@@ -7,12 +7,14 @@ const atan2 = Math.atan2;
 const PI2 = Math.PI * 2;
 
 export default class Ball implements ICollideObject2d {
-  /** 半径 */
-  protected radius: number;
   /** 中心点坐标 X */
   protected x: number = 0;
   /** 中心点坐标 Y */
   protected y: number = 0;
+  /** 半径 */
+  protected radius: number;
+  /** 半径平法 */
+  protected radiusSqua: number;
   /** 运动方向弧度 */
   protected arc: number = 0;
   /** 运动速度 */
@@ -31,6 +33,7 @@ export default class Ball implements ICollideObject2d {
    */
   constructor(radius: number) {
     this.mass = this.radius = radius;
+    this.radiusSqua = radius * radius;
   }
 
   /**
@@ -185,17 +188,18 @@ export default class Ball implements ICollideObject2d {
     const distanceY = this.y - wall.y;
     const distanceXSqua = distanceX * distanceX;
     const distanceYSqua = distanceY * distanceY;
-    const distanceMin = this.radius + wall.radiusSqua;
+    const distanceSqua = distanceXSqua + distanceYSqua;
+    const distanceMin = this.radius + wall.radius;
 
     // 如果与矩形外接圆重叠再进行下一步检测
-    if (distanceXSqua + distanceYSqua <= distanceMin * distanceMin) {
-      const distance = sqrt(distanceXSqua + distanceYSqua);
+    if (distanceSqua <= distanceMin * distanceMin) {
+      const distance = sqrt(distanceSqua);
       const theta = atan2(distanceY, distanceX) - wall.rotate;
       const thetaX = distance * cos(theta);
       const thetaY = distance * sin(theta);
       const relativeX = thetaX > 0 ? Math.max(0, thetaX - wall.width) : thetaX;
       const relativey = thetaY > 0 ? Math.max(0, thetaY - wall.height) : thetaY;
-      return relativeX * relativeX + relativey * relativey <= this.radius * this.radius;
+      return relativeX * relativeX + relativey * relativey <= this.radiusSqua;
     }
 
     return false;
@@ -256,6 +260,6 @@ export default class Ball implements ICollideObject2d {
    * @param target 目标
    */
   public collideWall(_target: Wall): void {
-    //
+    this.setDecomposition(-this.speedX, -this.speedY);
   }
 }

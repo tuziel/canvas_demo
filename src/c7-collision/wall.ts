@@ -9,7 +9,9 @@ export default class Wall implements ICollideObject2d {
   protected width: number;
   /** 高度 */
   protected height: number;
-  /** 外接圆半径的平方 */
+  /** 外接圆直径 */
+  protected radius: number;
+  /** 外接圆直径的平方 */
   protected radiusSqua: number;
   /** 旋转角度 */
   protected rotate: number = 0;
@@ -30,6 +32,7 @@ export default class Wall implements ICollideObject2d {
     this.width = width;
     this.height = height;
     this.radiusSqua = width * width + height * height;
+    this.radius = Math.sqrt(this.radiusSqua);
   }
 
   public update() { /* nop*/ }
@@ -68,6 +71,7 @@ export default class Wall implements ICollideObject2d {
     this.width = width;
     this.height = height;
     this.radiusSqua = width * width + height * height;
+    this.radius = Math.sqrt(this.radiusSqua);
   }
 
   /**
@@ -95,7 +99,9 @@ export default class Wall implements ICollideObject2d {
       width: this.width,
       /** 高度 */
       height: this.height,
-      /** 外接圆半径的平方 */
+      /** 外接圆直径 */
+      radius: this.radius,
+      /** 外接圆直径的平方 */
       radiusSqua: this.radiusSqua,
       /** 旋转角度 */
       rotate: this.rotate,
