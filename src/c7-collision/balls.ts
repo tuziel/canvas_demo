@@ -188,10 +188,10 @@ export default class Ball implements ISportObject2d, ICollideObject2d {
     const m2 = target.mass;
     /** 碰撞角 */
     const theta = atan2(target.y - this.y, target.x - this.x);
-
-    // 计算沿碰撞角的速度分量
     const cosT = cos(theta);
     const sinT = sin(theta);
+
+    // 计算沿碰撞角的速度分量
     const vv11 = this.speedX * cosT + this.speedY * sinT;
     const vh1 = this.speedY * cosT - this.speedX * sinT;
     const vv21 = target.speedX * cosT + target.speedY * sinT;
