@@ -32,7 +32,7 @@ export default class Rectangle implements IObject2d {
     this.fillStyle = style;
   }
 
-  public update() { /* nop*/ }
+  public update(): void { /* nop*/ }
 
   /**
    * 渲染物件

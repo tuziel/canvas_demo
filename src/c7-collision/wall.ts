@@ -43,7 +43,7 @@ export default class Wall implements ICollideObject2d {
     this.resetOuter();
   }
 
-  public update() { /* nop*/ }
+  public update(): void { /* nop*/ }
 
   /**
    * 渲染

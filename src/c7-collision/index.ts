@@ -26,7 +26,7 @@ window.addEventListener('load', (): void => {
   const objects: ICollideObject2d[] = [];
 
   /** 生成墙壁 */
-  function createWalls() {
+  function createWalls(): void {
     objects.push(
       new Wall(5, 5, appWidth - 10, 1),
       new Wall(5, 5, 1, appHeight - 10),
@@ -44,7 +44,7 @@ window.addEventListener('load', (): void => {
    *
    * @param count 数量
    */
-  function createBalls(count: number) {
+  function createBalls(count: number): void {
     while (count--) {
       const ball = new Ball(5 + random() * 10 >>> 0);
       ball.setArc(random() * PI2);
@@ -104,7 +104,7 @@ window.addEventListener('load', (): void => {
     }
   }
 
-  (function main() {
+  (function main(): void {
     // 创建对象
     createWalls();
     createBalls(50);

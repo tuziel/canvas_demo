@@ -109,7 +109,7 @@ window.addEventListener('load', (): void => {
   /**
    * 绘制坦克
    */
-  function drawTank(detla: number, time: number) {
+  function drawTank(detla: number, time: number): void {
     const pos = getTankPosition(detla * tank.speed);
     const halfSizeX = tank.halfSizeX;
     const halfSizeY = tank.halfSizeY;
@@ -129,7 +129,7 @@ window.addEventListener('load', (): void => {
   /**
    * 更新坦克数据
    */
-  function updateTank() {
+  function updateTank(): void {
     const pos = getTankPosition(tank.speed);
     tank.x = pos.x;
     tank.y = pos.y;
@@ -140,7 +140,7 @@ window.addEventListener('load', (): void => {
    *
    * @param 更新时间
    */
-  function execCommand(time: number) {
+  function execCommand(time: number): void {
     let cmd;
     while ((cmd = commandQueue.shift())) {
       cmd(time);
@@ -195,7 +195,7 @@ window.addEventListener('load', (): void => {
     });
   }
 
-  (function main() {
+  (function main(): void {
     initEvent();
 
     // 创建主循环

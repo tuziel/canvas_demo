@@ -185,6 +185,7 @@ export default class Ball implements ICollideObject2d {
    */
   public testWall(target: Wall): boolean {
     const wall = target.getCollideData();
+
     // 如果与AABB盒重叠再进行下一步检测
     if (
       this.y >= wall.outerTop - this.radius &&
