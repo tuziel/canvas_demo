@@ -51,7 +51,6 @@ const config = {
     ],
   },
   plugins: [
-    new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
       template: `${ROOT}/src/index.html`,
       chunks: [],
