@@ -179,7 +179,7 @@ export default class Wall implements ICollideObject2d {
    */
   protected swapRecord(): void {
     this.recordIndex = 1 - this.recordIndex;
-    this.record[this.recordIndex].length = 0;
+    this.record[this.recordIndex] = [];
   }
 
   /**

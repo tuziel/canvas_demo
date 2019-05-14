@@ -202,7 +202,7 @@ export default class Ball implements ICollideObject2d {
       this.setRecord(target);
       target.setRecord(this);
 
-      if (!this.hasRecord(target) && !target.hasRecord(this)) {
+      if (!this.hasRecord(target)) {
         /** 质量 */
         const m1 = this.mass;
         /** 目标质量 */
@@ -251,7 +251,7 @@ export default class Ball implements ICollideObject2d {
       this.y <= wall.outerBottom + this.radius &&
       this.x >= wall.outerLeft - this.radius
     ) {
-      // 建立坐标系, 以矩形起点为原点, 宽高方向为轴
+      // 建立坐标系, 以矩形起点为原点, 宽的方向为正X轴
       const distanceX = this.x - wall.x;
       const distanceY = this.y - wall.y;
       const distance = sqrt(distanceX * distanceX + distanceY * distanceY);
@@ -269,7 +269,7 @@ export default class Ball implements ICollideObject2d {
         this.setRecord(target);
         target.setRecord(this);
 
-        if (!this.hasRecord(target) && !target.hasRecord(this)) {
+        if (!this.hasRecord(target)) {
           const detla = atan2(relativeY, relativeX);
           // 计算运动方向, 并还原坐标系
           this.setArc((PI - this.arc + detla + detla + wall.rotate + wall.rotate) % PI2);
@@ -305,6 +305,6 @@ export default class Ball implements ICollideObject2d {
    */
   protected swapRecord(): void {
     this.recordIndex = 1 - this.recordIndex;
-    this.record[this.recordIndex].length = 0;
+    this.record[this.recordIndex] = [];
   }
 }
