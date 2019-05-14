@@ -187,6 +187,7 @@ export default class Ball implements ICollideObject2d {
 
     // 触发碰撞效果
     if (isCollided && effect) {
+      // 记录碰撞防止重复触发
       this.setRecord(target);
       target.setRecord(this);
 
@@ -239,24 +240,28 @@ export default class Ball implements ICollideObject2d {
       this.y <= wall.outerBottom + this.radius &&
       this.x >= wall.outerLeft - this.radius
     ) {
+      // 建立坐标系, 以矩形起点为原点, 宽高方向为轴
       const distanceX = this.x - wall.x;
       const distanceY = this.y - wall.y;
       const distance = sqrt(distanceX * distanceX + distanceY * distanceY);
       const theta = atan2(distanceY, distanceX) - wall.rotate;
       const thetaX = distance * cos(theta);
       const thetaY = distance * sin(theta);
+      // 折叠矩形宽高. 问题简化为圆与点碰撞
       const relativeX = thetaX > 0 ? max(0, thetaX - wall.width) : thetaX;
       const relativeY = thetaY > 0 ? max(0, thetaY - wall.height) : thetaY;
       const isCollided = relativeX * relativeX + relativeY * relativeY <= this.radiusSqua;
 
       // 触发碰撞效果
       if (isCollided && effect) {
+        // 记录碰撞防止重复触发
         this.setRecord(target);
         target.setRecord(this);
 
         if (!this.hasRecord(target) && !target.hasRecord(this)) {
           const detla = atan2(relativeY, relativeX);
-          this.setArc((detla + detla - PI - this.arc - wall.rotate) % PI2);
+          // 计算运动方向, 并还原坐标系
+          this.setArc((PI - this.arc + detla + detla + wall.rotate + wall.rotate) % PI2);
         }
       }
 
