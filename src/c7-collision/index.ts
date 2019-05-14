@@ -40,7 +40,7 @@ window.addEventListener('load', (): void => {
     while (count--) {
       const wall = new Wall(0, 0, 20 + random() * 80 >>> 0, 20 + random() * 80 >>> 0);
       wall.setRotate(random() * PI2);
-      wall.setStyle(`#${(random() * 256 * 256 * 256 >>> 0).toString(16)}`);
+      wall.setStyle(`#${Array.from('      ', () => (Math.random() * 16).toString(16)[0]).join('')}`);
 
       do {
         wall.setPosition(random() * appWidth >>> 0, random() * appHeight >>> 0);
@@ -59,7 +59,7 @@ window.addEventListener('load', (): void => {
       const ball = new Ball(5 + random() * 10 >>> 0);
       ball.setArc(random() * PI2);
       ball.setSpeed((10 + random() * 25 >>> 0) / 10);
-      ball.setStyle(`#${(random() * 256 * 256 * 256 >>> 0).toString(16)}`);
+      ball.setStyle(`#${Array.from('      ', () => (Math.random() * 16).toString(16)[0]).join('')}`);
 
       do {
         ball.setPosition(random() * appWidth >>> 0, random() * appHeight >>> 0);
@@ -72,7 +72,7 @@ window.addEventListener('load', (): void => {
   function canPutItDown(object: ICollideObject2d): boolean {
     let length = objects.length;
     while (length--) {
-      if (object.test(objects[length])) {
+      if (object.testCollide(objects[length])) {
         return false;
       }
     }
@@ -98,7 +98,7 @@ window.addEventListener('load', (): void => {
       object.update();
       let i = length;
       while (i--) {
-        object.test(objects[i], true);
+        object.testCollide(objects[i], true);
       }
     }
   }

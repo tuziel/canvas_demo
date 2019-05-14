@@ -31,7 +31,7 @@ export default class Ball implements ICollideObject2d {
   protected fillStyle: string | CanvasGradient | CanvasPattern = '#000000';
 
   /** 碰撞记录 */
-  protected record: [ICollideObject2d[], ICollideObject2d[]] = [[], []];
+  protected record: [ICollideObject2d?, ICollideObject2d?] = [];
   protected recordIndex: number = 0;
 
   /**
@@ -172,8 +172,9 @@ export default class Ball implements ICollideObject2d {
    * 碰撞检测
    *
    * @param target 测试的目标
+   * @param effect 是否触发碰撞效果
    */
-  public test(target: IObject2d, effect?: boolean): boolean {
+  public testCollide(target: ICollideObject2d, effect?: boolean): boolean {
     if (target instanceof Ball) {
       return this.testBall(target, effect);
     } else if (target instanceof Wall) {
@@ -288,7 +289,7 @@ export default class Ball implements ICollideObject2d {
    * @param object 物件
    */
   public setRecord(object: ICollideObject2d): void {
-    this.record[this.recordIndex].push(object);
+    this.record[this.recordIndex] = object;
   }
 
   /**
@@ -297,7 +298,7 @@ export default class Ball implements ICollideObject2d {
    * @param object 物件
    */
   public hasRecord(object: ICollideObject2d): boolean {
-    return this.record[1 - this.recordIndex].indexOf(object) >= 0;
+    return this.record[1 - this.recordIndex] === object;
   }
 
   /**
@@ -305,6 +306,6 @@ export default class Ball implements ICollideObject2d {
    */
   protected swapRecord(): void {
     this.recordIndex = 1 - this.recordIndex;
-    this.record[this.recordIndex] = [];
+    delete this.record[this.recordIndex];
   }
 }

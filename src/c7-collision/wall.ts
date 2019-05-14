@@ -28,7 +28,7 @@ export default class Wall implements ICollideObject2d {
   protected fillStyle: string | CanvasGradient | CanvasPattern = '#000000';
 
   /** 碰撞记录 */
-  protected record: [ICollideObject2d[], ICollideObject2d[]] = [[], []];
+  protected record: [ICollideObject2d?, ICollideObject2d?] = [];
   protected recordIndex: number = 0;
 
   /**
@@ -148,10 +148,33 @@ export default class Wall implements ICollideObject2d {
    * 碰撞检测
    *
    * @param target 测试的目标
+   * @param effect 是否触发碰撞效果
    */
-  public test(target: IObject2d, effect?: boolean): boolean {
+  public testCollide(target: ICollideObject2d, effect?: boolean): boolean {
     if (target instanceof Ball) {
       return target.testWall(this, effect);
+    } else if (target instanceof Wall) {
+      return this.testWall(target);
+    }
+    return false;
+  }
+
+  /**
+   * 对球体的碰撞检测
+   *
+   * @param target 目标
+   */
+  public testWall(target: Wall): boolean {
+    // 如果与AABB盒重叠再进行下一步检测
+    if (
+      this.outerTop <= target.outerBottom &&
+      this.outerRight >= target.outerLeft &&
+      this.outerBottom >= target.outerTop &&
+      this.outerLeft <= target.outerRight
+    ) {
+      // TODO: 需要使用分离轴实现对obb的碰撞检测
+
+      return true;
     }
     return false;
   }
@@ -162,7 +185,7 @@ export default class Wall implements ICollideObject2d {
    * @param object 物件
    */
   public setRecord(object: ICollideObject2d): void {
-    this.record[this.recordIndex].push(object);
+    this.record[this.recordIndex] = object;
   }
 
   /**
@@ -171,7 +194,7 @@ export default class Wall implements ICollideObject2d {
    * @param object 物件
    */
   public hasRecord(object: ICollideObject2d): boolean {
-    return this.record[1 - this.recordIndex].indexOf(object) >= 0;
+    return this.record[1 - this.recordIndex] === object;
   }
 
   /**
@@ -179,7 +202,7 @@ export default class Wall implements ICollideObject2d {
    */
   protected swapRecord(): void {
     this.recordIndex = 1 - this.recordIndex;
-    this.record[this.recordIndex] = [];
+    delete this.record[this.recordIndex];
   }
 
   /**
