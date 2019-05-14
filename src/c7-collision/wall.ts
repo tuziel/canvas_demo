@@ -110,6 +110,15 @@ export default class Wall implements ICollideObject2d {
   }
 
   /**
+   * 设置填充样式
+   *
+   * @param style  填充样式
+   */
+  public setStyle(style: string | CanvasGradient | CanvasPattern): void {
+    this.fillStyle = style;
+  }
+
+  /**
    * 获取用于计算碰撞的数据
    */
   public getCollideData(): { [x: string]: number } {

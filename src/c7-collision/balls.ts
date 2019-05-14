@@ -27,6 +27,8 @@ export default class Ball implements ICollideObject2d {
   protected speedY: number = 0;
   /** 质量 */
   protected mass: number = 1;
+  /** 填充样式 */
+  protected fillStyle: string | CanvasGradient | CanvasPattern = '#000000';
 
   /** 碰撞记录 */
   protected record: [ICollideObject2d[], ICollideObject2d[]] = [[], []];
@@ -62,7 +64,7 @@ export default class Ball implements ICollideObject2d {
     context.beginPath();
     context.arc(pos.x, pos.y, this.radius, 0, PI2, true);
     context.closePath();
-    context.fillStyle = '#000000';
+    context.fillStyle = this.fillStyle;
     context.fill();
   }
 
@@ -155,6 +157,15 @@ export default class Ball implements ICollideObject2d {
    */
   public setArcOnly(arc: number): void {
     this.arc = arc;
+  }
+
+  /**
+   * 设置填充样式
+   *
+   * @param style  填充样式
+   */
+  public setStyle(style: string | CanvasGradient | CanvasPattern): void {
+    this.fillStyle = style;
   }
 
   /**

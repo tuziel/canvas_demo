@@ -40,6 +40,7 @@ window.addEventListener('load', (): void => {
     while (count--) {
       const wall = new Wall(0, 0, 20 + random() * 80 >>> 0, 20 + random() * 80 >>> 0);
       wall.setRotate(random() * PI2);
+      wall.setStyle(`#${(random() * 256 * 256 * 256 >>> 0).toString(16)}`);
 
       do {
         wall.setPosition(random() * appWidth >>> 0, random() * appHeight >>> 0);
@@ -58,6 +59,7 @@ window.addEventListener('load', (): void => {
       const ball = new Ball(5 + random() * 10 >>> 0);
       ball.setArc(random() * PI2);
       ball.setSpeed((10 + random() * 25 >>> 0) / 10);
+      ball.setStyle(`#${(random() * 256 * 256 * 256 >>> 0).toString(16)}`);
 
       do {
         ball.setPosition(random() * appWidth >>> 0, random() * appHeight >>> 0);
@@ -82,7 +84,7 @@ window.addEventListener('load', (): void => {
    */
   function drawBackground(): void {
     // 背景
-    context.fillStyle = '#ffffaa';
+    context.fillStyle = '#ffc6c6';
     context.fillRect(0, 0, appWidth, appHeight);
   }
 
