@@ -28,10 +28,10 @@ window.addEventListener('load', (): void => {
   /** 生成边框 */
   function createBorder(): void {
     objects.push(
-      new Wall(0, 0, appWidth, 5),
-      new Wall(0, 0, 5, appHeight),
-      new Wall(appWidth - 5, 0, 5, appHeight),
-      new Wall(0, appHeight - 5, appWidth, 5),
+      new Wall(5, 5, appWidth - 10, 1),
+      new Wall(5, 5, 1, appHeight - 10),
+      new Wall(appWidth - 5, 5, 1, appHeight - 10),
+      new Wall(5, appHeight - 5, appWidth - 10, 1),
     );
   }
 
@@ -58,7 +58,7 @@ window.addEventListener('load', (): void => {
     while (count--) {
       const ball = new Ball(5 + random() * 10 >>> 0);
       ball.setArc(random() * PI2);
-      ball.setSpeed((10 + random() * 25 >>> 0) / 10);
+      ball.setSpeed((10 + random() * 25 >>> 0) / 100);
       ball.setStyle(`#${Array.from('      ', () => (Math.random() * 16).toString(16)[0]).join('')}`);
 
       do {
@@ -121,7 +121,7 @@ window.addEventListener('load', (): void => {
     createBalls(100);
 
     // 创建主循环
-    const gameloop = new Loop();
+    const gameloop = new Loop(1);
     gameloop.update(updater);
     gameloop.render(renderer);
     gameloop.start();
