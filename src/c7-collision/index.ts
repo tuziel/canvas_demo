@@ -28,10 +28,10 @@ window.addEventListener('load', (): void => {
   /** 生成边框 */
   function createBorder(): void {
     objects.push(
-      new Wall(5, 5, appWidth - 10, 1),
-      new Wall(5, 5, 1, appHeight - 10),
-      new Wall(appWidth - 5, 5, 1, appHeight - 10),
-      new Wall(5, appHeight - 5, appWidth - 10, 1),
+      new Wall(0, 0, appWidth, 5),
+      new Wall(0, 0, 5, appHeight),
+      new Wall(appWidth - 5, 0, 5, appHeight),
+      new Wall(0, appHeight - 5, appWidth, 5),
     );
   }
 
