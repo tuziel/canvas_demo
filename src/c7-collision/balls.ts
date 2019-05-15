@@ -30,10 +30,6 @@ export default class Ball implements ICollideObject2d {
   /** 填充样式 */
   protected fillStyle: string | CanvasGradient | CanvasPattern = '#000000';
 
-  /** 碰撞记录 */
-  protected record: [ICollideObject2d?, ICollideObject2d?] = [];
-  protected recordIndex: number = 0;
-
   /**
    * 创建一个球体
    *
@@ -51,7 +47,6 @@ export default class Ball implements ICollideObject2d {
     const pos = this.getNextPosition(1);
     this.x = pos.x;
     this.y = pos.y;
-    this.swapRecord();
   }
 
   /**
@@ -169,7 +164,7 @@ export default class Ball implements ICollideObject2d {
   }
 
   /**
-   * 碰撞检测
+   * 重叠检测
    *
    * @param target 测试的目标
    * @param effect 是否触发碰撞效果
@@ -184,9 +179,10 @@ export default class Ball implements ICollideObject2d {
   }
 
   /**
-   * 对球体的碰撞检测
+   * 对球体的重叠检测
    *
    * @param target 目标
+   * @param effect 是否触发碰撞效果
    */
   public testBall(target: Ball, effect?: boolean): boolean {
     // 计算距离
@@ -194,32 +190,30 @@ export default class Ball implements ICollideObject2d {
     const distanceY = target.y - this.y;
     const distanceMin = this.radius + target.radius;
 
-    /** 是否发生碰撞 */
-    const isCollided = distanceX * distanceX + distanceY * distanceY <= distanceMin * distanceMin;
+    /** 是否有重叠 */
+    const hasOverlap = distanceX * distanceX + distanceY * distanceY <= distanceMin * distanceMin;
 
-    // 触发碰撞效果
-    if (isCollided && effect) {
-      // 记录碰撞防止重复触发
-      this.setRecord(target);
-      target.setRecord(this);
+    // 计算碰撞效果
+    if (hasOverlap && effect) {
+      /** 质量 */
+      const m1 = this.mass;
+      /** 目标质量 */
+      const m2 = target.mass;
+      /** 碰撞角 */
+      const theta = atan2(distanceY, distanceX);
+      const cosT = cos(theta);
+      const sinT = sin(theta);
 
-      if (!this.hasRecord(target)) {
-        /** 质量 */
-        const m1 = this.mass;
-        /** 目标质量 */
-        const m2 = target.mass;
-        /** 碰撞角 */
-        const theta = atan2(distanceY, distanceX);
-        const cosT = cos(theta);
-        const sinT = sin(theta);
+      // 计算沿碰撞角的速度分量
+      // vx = speed * cos(arc - detla)
+      //    = speed * cos(arc) * cos(detla) + speed * sin(arc) * sin(detla)
+      //    = speedX * cos(detla) + speedY * sin(detla)
+      const vv11 = this.speedX * cosT + this.speedY * sinT;
+      const vv21 = target.speedX * cosT + target.speedY * sinT;
 
-        // 计算沿碰撞角的速度分量
-        // vx = speed * cos(arc - detla)
-        //    = speed * cos(arc) * cos(detla) + speed * sin(arc) * sin(detla)
-        //    = speedX * cos(detla) + speedY * sin(detla)
-        const vv11 = this.speedX * cosT + this.speedY * sinT;
+      // 如果目标速度追不上或方向相反则不会触发碰撞
+      if (vv11 >= vv21) {
         const vh1 = this.speedY * cosT - this.speedX * sinT;
-        const vv21 = target.speedX * cosT + target.speedY * sinT;
         const vh2 = target.speedY * cosT - target.speedX * sinT;
 
         // 计算碰撞后的速度
@@ -234,13 +228,14 @@ export default class Ball implements ICollideObject2d {
       }
     }
 
-    return isCollided;
+    return hasOverlap;
   }
 
   /**
-   * 对墙的碰撞检测
+   * 对墙的重叠检测
    *
    * @param target 目标
+   * @param effect 是否触发碰撞效果
    */
   public testWall(target: Wall, effect?: boolean): boolean {
     const wall = target.getCollideData();
@@ -256,56 +251,34 @@ export default class Ball implements ICollideObject2d {
       const distanceX = this.x - wall.x;
       const distanceY = this.y - wall.y;
       const distance = sqrt(distanceX * distanceX + distanceY * distanceY);
+      /** 矩形坐标系中圆心相对矩形起点的角度 */
       const theta = atan2(distanceY, distanceX) - wall.rotate;
       const thetaX = distance * cos(theta);
       const thetaY = distance * sin(theta);
       // 折叠矩形宽高. 问题简化为圆与点碰撞
       const relativeX = thetaX > 0 ? max(0, thetaX - wall.width) : thetaX;
       const relativeY = thetaY > 0 ? max(0, thetaY - wall.height) : thetaY;
-      const isCollided = relativeX * relativeX + relativeY * relativeY <= this.radiusSqua;
+      const hasOverlap = relativeX * relativeX + relativeY * relativeY <= this.radiusSqua;
 
-      // 触发碰撞效果
-      if (isCollided && effect) {
-        // 记录碰撞防止重复触发
-        this.setRecord(target);
-        target.setRecord(this);
+      // 计算碰撞效果
+      if (hasOverlap && effect) {
+        /** 矩形坐标系的碰撞角 */
+        const detla = atan2(relativeY, relativeX);
+        /** 碰撞角的实际角度 */
+        const alpha = detla + wall.rotate;
+        /** 碰撞角坐标系的速度方向 */
+        const beta = this.arc - alpha;
 
-        if (!this.hasRecord(target)) {
-          const detla = atan2(relativeY, relativeX);
+        // 如果远离矩形则不会碰撞
+        if (this.speed * cos(beta) < 0) {
           // 计算运动方向, 并还原坐标系
-          this.setArc((PI - this.arc + detla + detla + wall.rotate + wall.rotate) % PI2);
+          this.setArc((PI - beta + alpha) % PI2);
         }
       }
 
-      return isCollided;
+      return hasOverlap;
     }
 
     return false;
-  }
-
-  /**
-   * 记录碰撞过的物件
-   *
-   * @param object 物件
-   */
-  public setRecord(object: ICollideObject2d): void {
-    this.record[this.recordIndex] = object;
-  }
-
-  /**
-   * 检查是否在上一次更新时碰撞过
-   *
-   * @param object 物件
-   */
-  public hasRecord(object: ICollideObject2d): boolean {
-    return this.record[1 - this.recordIndex] === object;
-  }
-
-  /**
-   * 交换记录表
-   */
-  protected swapRecord(): void {
-    this.recordIndex = 1 - this.recordIndex;
-    delete this.record[this.recordIndex];
   }
 }

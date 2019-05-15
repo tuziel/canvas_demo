@@ -27,10 +27,6 @@ export default class Wall implements ICollideObject2d {
   /** 填充样式 */
   protected fillStyle: string | CanvasGradient | CanvasPattern = '#000000';
 
-  /** 碰撞记录 */
-  protected record: [ICollideObject2d?, ICollideObject2d?] = [];
-  protected recordIndex: number = 0;
-
   /**
    * 创建一面墙
    *
@@ -47,9 +43,7 @@ export default class Wall implements ICollideObject2d {
     this.resetOuter();
   }
 
-  public update(): void {
-    this.swapRecord();
-  }
+  public update(): void { /* nop */ }
 
   /**
    * 渲染
@@ -177,32 +171,6 @@ export default class Wall implements ICollideObject2d {
       return true;
     }
     return false;
-  }
-
-  /**
-   * 记录碰撞过的物件
-   *
-   * @param object 物件
-   */
-  public setRecord(object: ICollideObject2d): void {
-    this.record[this.recordIndex] = object;
-  }
-
-  /**
-   * 检查是否在上一次更新时碰撞过
-   *
-   * @param object 物件
-   */
-  public hasRecord(object: ICollideObject2d): boolean {
-    return this.record[1 - this.recordIndex] === object;
-  }
-
-  /**
-   * 交换记录表
-   */
-  protected swapRecord(): void {
-    this.recordIndex = 1 - this.recordIndex;
-    delete this.record[this.recordIndex];
   }
 
   /**
