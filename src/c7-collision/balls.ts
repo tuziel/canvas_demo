@@ -185,7 +185,7 @@ export default class Ball implements ICollideObject2d {
    * @param effect 是否触发碰撞效果
    */
   public testBall(target: Ball, effect?: boolean): boolean {
-    // 计算距离
+    // 计算两个圆心的距离
     const distanceX = target.x - this.x;
     const distanceY = target.y - this.y;
     const distanceMin = this.radius + target.radius;
@@ -222,7 +222,7 @@ export default class Ball implements ICollideObject2d {
         const vv12 = ((m2 + m2) * vv21 + mDiff * vv11) / mSum;
         const vv22 = ((m1 + m1) * vv11 - mDiff * vv21) / mSum;
 
-        // 修正各参数
+        // 设置速度分量
         this.setDecomposition(vv12 * cosT - vh1 * sinT, vh1 * cosT + vv12 * sinT);
         target.setDecomposition(vv22 * cosT - vh2 * sinT, vh2 * cosT + vv22 * sinT);
       }
@@ -250,11 +250,15 @@ export default class Ball implements ICollideObject2d {
       // 建立坐标系, 以矩形起点为原点, 宽的方向为正X轴
       const distanceX = this.x - wall.x;
       const distanceY = this.y - wall.y;
+
+      /** 圆心和矩形起点的距离 */
       const distance = sqrt(distanceX * distanceX + distanceY * distanceY);
+
       /** 矩形坐标系中圆心相对矩形起点的角度 */
       const theta = atan2(distanceY, distanceX) - wall.rotate;
       const thetaX = distance * cos(theta);
       const thetaY = distance * sin(theta);
+
       // 折叠矩形宽高. 问题简化为圆与点碰撞
       const relativeX = thetaX > 0 ? max(0, thetaX - wall.width) : thetaX;
       const relativeY = thetaY > 0 ? max(0, thetaY - wall.height) : thetaY;
