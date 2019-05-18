@@ -58,7 +58,7 @@ window.addEventListener('load', (): void => {
     while (count--) {
       const ball = new Ball(5 + random() * 10 >>> 0);
       ball.setArc(random() * PI2);
-      ball.setSpeed((10 + random() * 25 >>> 0) / 100);
+      ball.setSpeed((10 + random() * 25 >>> 0) / 20);
       ball.setStyle(`#${Array.from('      ', () => (Math.random() * 16).toString(16)[0]).join('')}`);
 
       do {
@@ -121,7 +121,7 @@ window.addEventListener('load', (): void => {
     createBalls(100);
 
     // 创建主循环
-    const gameloop = new Loop(1);
+    const gameloop = new Loop(5);
     gameloop.update(updater);
     gameloop.render(renderer);
     gameloop.start();
