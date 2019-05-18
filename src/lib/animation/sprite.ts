@@ -1,8 +1,30 @@
 import PeriodAni from './period';
 
+type SpriteImage = HTMLImageElement | ImageBitmap;
+
+const createBitmap =
+  window.createImageBitmap ||
+  ((image: HTMLImageElement, sx: number, sy: number, sw: number, sh: number) => {
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d')!;
+    canvas.width = sw;
+    canvas.height = sh;
+    context.drawImage(image, -sx, -sy, image.width, image.height);
+    const grid = new Image();
+    grid.src = canvas.toDataURL();
+
+    return {
+      then: (callback: (sprite: SpriteImage) => void): void => {
+        callback(grid);
+      },
+    };
+  });
+
 export default class SpriteAni extends PeriodAni {
   /** 网格 */
-  protected grids: Array<[number, number, number, number]> = [];
+  protected grids: SpriteImage[] = [];
+  /** 图源 */
+  protected origin: HTMLImageElement;
 
   /**
    * 创建雪碧图动画
@@ -13,8 +35,10 @@ export default class SpriteAni extends PeriodAni {
   constructor(
     startStamp: number,
     frames: number,
+    origin: HTMLImageElement,
   ) {
     super(startStamp, frames);
+    this.origin = origin;
   }
 
   /**
@@ -31,7 +55,10 @@ export default class SpriteAni extends PeriodAni {
     sizeX: number,
     sizeY: number,
   ) {
-    this.grids.push([sourceX, sourceY, sizeX, sizeY]);
+    createBitmap(this.origin, sourceX, sourceY, sizeX, sizeY)
+      .then((grid) => {
+        this.grids.push(grid);
+      });
   }
 
   /**
@@ -42,18 +69,14 @@ export default class SpriteAni extends PeriodAni {
    */
   public render(
     time: number,
-    callback: (
-      sourceX: number,
-      sourceY: number,
-      sizeX: number,
-      sizeY: number,
-    ) => void,
+    callback: (phase: number, sprite: SpriteImage) => void,
   ): void {
     if (!this.state) {
       time = this.pauseStamp;
     }
-    const period = PeriodAni.getPhase(this.period, this.startStamp, time) >>> 0;
+    const phase = PeriodAni.getPhase(this.period, this.startStamp, time);
+    const period = phase >>> 0;
     const sprite = this.grids[period % this.grids.length];
-    callback(sprite[0], sprite[1], sprite[2], sprite[3]);
+    callback(phase, sprite);
   }
 }

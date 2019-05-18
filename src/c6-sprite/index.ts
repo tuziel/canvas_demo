@@ -21,7 +21,6 @@ window.addEventListener('load', (): void => {
 
   // 加载图片
   const tanksLoader = new ImageLoader(require('./tanks_sheet.png'));
-  const tanks = tanksLoader.getMedia();
 
   const STEP = 10;
   const PI = Math.PI;
@@ -67,16 +66,7 @@ window.addEventListener('load', (): void => {
   };
 
   /** 坦克动画 */
-  const tankSpriteAni = new SpriteAni(0, 80);
-  // 添加雪碧图网格
-  tankSpriteAni.push(32, 0, 32, 32);
-  tankSpriteAni.push(64, 0, 32, 32);
-  tankSpriteAni.push(96, 0, 32, 32);
-  tankSpriteAni.push(128, 0, 32, 32);
-  tankSpriteAni.push(160, 0, 32, 32);
-  tankSpriteAni.push(192, 0, 32, 32);
-  tankSpriteAni.push(224, 0, 32, 32);
-  tankSpriteAni.push(0, 32, 32, 32);
+  let tankSpriteAni: SpriteAni;
 
   /**
    * 绘制背景
@@ -113,15 +103,10 @@ window.addEventListener('load', (): void => {
     const pos = getTankPosition(detla * tank.speed);
     const halfSizeX = tank.halfSizeX;
     const halfSizeY = tank.halfSizeY;
-    tankSpriteAni.render(time, (
-      sourceX: number,
-      sourceY: number,
-      sizeX: number,
-      sizeY: number,
-    ) => {
+    tankSpriteAni.render(time, (_phase, sprite) => {
       context.translate(pos.x + halfSizeX, pos.y + halfSizeY);
       context.rotate(tank.arc + PI / 2);
-      context.drawImage(tanks, sourceX, sourceY, sizeX, sizeY, -halfSizeX, -halfSizeY, tank.sizeX, tank.sizeY);
+      context.drawImage(sprite, -halfSizeX, -halfSizeY, tank.sizeX, tank.sizeY);
       context.setTransform(1, 0, 0, 1, 0, 0);
     });
   }
@@ -204,7 +189,18 @@ window.addEventListener('load', (): void => {
     gameloop.render(renderer);
 
     // 等待图片加载完成
-    tanksLoader.then(() => {
+    tanksLoader.then(function() {
+      tankSpriteAni = new SpriteAni(0, 80, this);
+      // 添加雪碧图网格
+      tankSpriteAni.push(32, 0, 32, 32);
+      tankSpriteAni.push(64, 0, 32, 32);
+      tankSpriteAni.push(96, 0, 32, 32);
+      tankSpriteAni.push(128, 0, 32, 32);
+      tankSpriteAni.push(160, 0, 32, 32);
+      tankSpriteAni.push(192, 0, 32, 32);
+      tankSpriteAni.push(224, 0, 32, 32);
+      tankSpriteAni.push(0, 32, 32, 32);
+
       gameloop.start();
     });
   })();
